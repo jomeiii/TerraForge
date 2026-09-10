@@ -10,24 +10,29 @@ public class Game : GameWindow
     // OpenGL resources
     private int _vertexBuffer;
     private int _vertexArray;
+    private int _elementBuffer;
 
     private Shader _shader;
     private Texture _texture;
+    private Texture _texture2;
 
     private float[] _vertices =
     {
         // Position          // Texture coordinates
 
-        // First triangle
+        // Four vertices
         -0.5f,  0.5f, 0.0f,  0.0f, 1.0f, // top left
          0.5f,  0.5f, 0.0f,  1.0f, 1.0f, // top right
          0.5f, -0.5f, 0.0f,  1.0f, 0.0f, // bottom right
-
-        // Second triangle
-        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f, // top left
-         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, // bottom right
         -0.5f, -0.5f, 0.0f,  0.0f, 0.0f  // bottom left
     };
+
+    private readonly uint[] _indices =
+    {
+        0, 1, 2,
+        0, 2, 3
+    };
+
 
     public Game(int width, int height, string title)
         : base(
@@ -95,16 +100,31 @@ public class Game : GameWindow
         );
 
         GL.EnableVertexAttribArray(1);
+
+        // Create EBO
+        _elementBuffer = GL.GenBuffer();
+        GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBuffer);
+
+        GL.BufferData(
+            BufferTarget.ElementArrayBuffer,
+            _indices.Length * sizeof(uint),
+            _indices,
+            BufferUsageHint.StaticDraw
+        );
     }
 
     private void InitializeShader()
     {
         _shader = new Shader("shader.vert", "shader.frag");
+        _shader.Use();
+        _shader.SetInt("texture0", 0);
+        _shader.SetInt("texture1", 1);
     }
 
     private void InitializeTexture()
     {
-        _texture = new Texture("Textures/bricks.jpeg");
+        _texture = new Texture("Textures/ChatGPT Image 28 авг. 2026 г., 12_06_38.png");
+        _texture2 = new Texture("Textures/bricks.jpeg");
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
@@ -120,24 +140,22 @@ public class Game : GameWindow
     protected override void OnRenderFrame(FrameEventArgs args)
     {
         base.OnRenderFrame(args);
-
-        // Clear previous frame
-        GL.Clear(ClearBufferMask.ColorBufferBit);
+    
+        GL.Clear(ClearBufferMask.ColorBufferBit); // Clear previous frame
+        GL.BindVertexArray(_vertexArray); // Use vertex configuration
 
         // Use shader
         _shader.Use();
 
         // Use texture
-        _texture.Use();
+        _texture.Use(TextureUnit.Texture0);
+        _texture2.Use(TextureUnit.Texture1);
 
-        // Use vertex configuration
-        GL.BindVertexArray(_vertexArray);
-
-        // Draw 6 vertices = 2 triangles = 1 square
-        GL.DrawArrays(
+        GL.DrawElements(
             PrimitiveType.Triangles,
-            0,
-            6
+            _indices.Length,
+            DrawElementsType.UnsignedInt,
+            0
         );
 
         SwapBuffers();
@@ -153,6 +171,7 @@ public class Game : GameWindow
     protected override void OnUnload()
     {
         GL.DeleteBuffer(_vertexBuffer);
+        GL.DeleteBuffer(_elementBuffer);
         GL.DeleteVertexArray(_vertexArray);
 
         _shader.Dispose();
