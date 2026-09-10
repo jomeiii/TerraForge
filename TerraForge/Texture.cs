@@ -10,7 +10,6 @@ public class Texture
     public Texture(string path)
     {
         Handle = GL.GenTexture();
-        Use();
 
         StbImage.stbi_set_flip_vertically_on_load(1);
 
@@ -18,7 +17,10 @@ public class Texture
 
         ImageResult image = ImageResult.FromStream(
             stream,
-            ColorComponents.RedGreenBlueAlpha);
+            ColorComponents.RedGreenBlueAlpha
+        );
+
+        Use();
 
         GL.TexImage2D(
             TextureTarget.Texture2D,
@@ -29,19 +31,20 @@ public class Texture
             0,
             PixelFormat.Rgba,
             PixelType.UnsignedByte,
-            image.Data);
+            image.Data
+        );
 
         GL.TexParameter(
             TextureTarget.Texture2D,
             TextureParameterName.TextureMinFilter,
-            (int)TextureMinFilter.Nearest);
+            (int)TextureMinFilter.Nearest
+        );
 
         GL.TexParameter(
             TextureTarget.Texture2D,
             TextureParameterName.TextureMagFilter,
-            (int)TextureMagFilter.Nearest);
-
-        GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+            (int)TextureMagFilter.Nearest
+        );
     }
 
     public void Use(TextureUnit unit = TextureUnit.Texture0)

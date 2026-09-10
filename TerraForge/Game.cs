@@ -12,11 +12,13 @@ public class Game : GameWindow
     private int _vertexArray;
     private int _elementBuffer;
 
-    private Shader _shader;
-    private Texture _texture;
-    private Texture _texture2;
+    private readonly Shader _shader;
+    private readonly Texture _texture;
+    private readonly Texture _texture2;
 
-    private float[] _vertices =
+    private const int VertexSize = 5;
+
+    private readonly float[] _vertices =
     {
         // Position          // Texture coordinates
 
@@ -33,7 +35,6 @@ public class Game : GameWindow
         0, 2, 3
     };
 
-
     public Game(int width, int height, string title)
         : base(
             GameWindowSettings.Default,
@@ -43,6 +44,13 @@ public class Game : GameWindow
                 Title = title
             })
     {
+        _shader = new Shader("shader.vert", "shader.frag");
+
+        _texture = new Texture(
+            "Textures/ChatGPT Image 28 авг. 2026 г., 12_06_38.png");
+
+        _texture2 = new Texture(
+            "Textures/bricks.jpeg");
     }
 
     protected override void OnLoad()
@@ -50,8 +58,10 @@ public class Game : GameWindow
         base.OnLoad();
 
         InitializeVertexData();
-        InitializeShader();
-        InitializeTexture();
+
+        _shader.Use();
+        _shader.SetInt("texture0", 0);
+        _shader.SetInt("texture1", 1);
 
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     }
@@ -82,7 +92,7 @@ public class Game : GameWindow
             3,
             VertexAttribPointerType.Float,
             false,
-            5 * sizeof(float),
+            VertexSize * sizeof(float),
             0
         );
 
@@ -95,7 +105,7 @@ public class Game : GameWindow
             2,
             VertexAttribPointerType.Float,
             false,
-            5 * sizeof(float),
+            VertexSize * sizeof(float),
             3 * sizeof(float)
         );
 
@@ -113,20 +123,6 @@ public class Game : GameWindow
         );
     }
 
-    private void InitializeShader()
-    {
-        _shader = new Shader("shader.vert", "shader.frag");
-        _shader.Use();
-        _shader.SetInt("texture0", 0);
-        _shader.SetInt("texture1", 1);
-    }
-
-    private void InitializeTexture()
-    {
-        _texture = new Texture("Textures/ChatGPT Image 28 авг. 2026 г., 12_06_38.png");
-        _texture2 = new Texture("Textures/bricks.jpeg");
-    }
-
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
         base.OnUpdateFrame(args);
@@ -140,14 +136,16 @@ public class Game : GameWindow
     protected override void OnRenderFrame(FrameEventArgs args)
     {
         base.OnRenderFrame(args);
-    
-        GL.Clear(ClearBufferMask.ColorBufferBit); // Clear previous frame
-        GL.BindVertexArray(_vertexArray); // Use vertex configuration
+
+        GL.Clear(ClearBufferMask.ColorBufferBit);
+
+        // Use vertex configuration
+        GL.BindVertexArray(_vertexArray);
 
         // Use shader
         _shader.Use();
 
-        // Use texture
+        // Use textures
         _texture.Use(TextureUnit.Texture0);
         _texture2.Use(TextureUnit.Texture1);
 
@@ -170,11 +168,11 @@ public class Game : GameWindow
 
     protected override void OnUnload()
     {
-        GL.DeleteBuffer(_vertexBuffer);
-        GL.DeleteBuffer(_elementBuffer);
-        GL.DeleteVertexArray(_vertexArray);
-
         _shader.Dispose();
+
+        GL.DeleteBuffer(_elementBuffer);
+        GL.DeleteBuffer(_vertexBuffer);
+        GL.DeleteVertexArray(_vertexArray);
 
         base.OnUnload();
     }
