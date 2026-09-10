@@ -1,4 +1,3 @@
-using System;
 using OpenTK.Graphics.OpenGL4;
 using StbImageSharp;
 
@@ -6,21 +5,21 @@ namespace TerraForge;
 
 public class Texture
 {
-    public int handle;
+    public int Handle { get; }
 
     public Texture(string path)
     {
-        handle = GL.GenTexture();
+        Handle = GL.GenTexture();
         Use();
-        
-        // stb_image loads from the top-left pixel, whereas OpenGL loads from the bottom-left, causing the texture to be flipped vertically.
-        // This will correct that, making the texture display properly.
+
         StbImage.stbi_set_flip_vertically_on_load(1);
 
-        // Load the image.
+        using FileStream stream = File.OpenRead(path);
+
         ImageResult image = ImageResult.FromStream(
-            File.OpenRead(path),
+            stream,
             ColorComponents.RedGreenBlueAlpha);
+
         GL.TexImage2D(
             TextureTarget.Texture2D,
             0,
@@ -31,10 +30,22 @@ public class Texture
             PixelFormat.Rgba,
             PixelType.UnsignedByte,
             image.Data);
+
+        GL.TexParameter(
+            TextureTarget.Texture2D,
+            TextureParameterName.TextureMinFilter,
+            (int)TextureMinFilter.Nearest);
+
+        GL.TexParameter(
+            TextureTarget.Texture2D,
+            TextureParameterName.TextureMagFilter,
+            (int)TextureMagFilter.Nearest);
+
+        GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
     }
 
     public void Use()
     {
-        GL.BindTexture(TextureTarget.Texture2D, handle);
+        GL.BindTexture(TextureTarget.Texture2D, Handle);
     }
 }

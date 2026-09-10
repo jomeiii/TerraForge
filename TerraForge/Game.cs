@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -13,22 +12,21 @@ public class Game : GameWindow
     private int _vertexArray;
 
     private Shader _shader;
-    private Stopwatch _timer;
+    private Texture _texture;
 
-    // Each vertex contains:
-    // position (X, Y, Z) + color (R, G, B)
-    private readonly float[] _vertices =
+    private float[] _vertices =
     {
-        // Position        // Color
-        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right - red
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left  - green
-        0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f // top          - blue
-    };
-    
-    private float[] _texCoords = {
-        0.0f, 0.0f,  // lower-left corner  
-        1.0f, 0.0f,  // lower-right corner
-        0.5f, 1.0f   // top-center corner
+        // Position          // Texture coordinates
+
+        // First triangle
+        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f, // top left
+         0.5f,  0.5f, 0.0f,  1.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, // bottom right
+
+        // Second triangle
+        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f, // top left
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f  // bottom left
     };
 
     public Game(int width, int height, string title)
@@ -48,23 +46,22 @@ public class Game : GameWindow
 
         InitializeVertexData();
         InitializeShader();
-        InitializeTimer();
+        InitializeTexture();
 
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     }
 
-    // Creates VAO and VBO and tells OpenGL
-    // how to interpret the data inside the VBO.
     private void InitializeVertexData()
     {
-        // VAO stores the configuration of our vertex data. (Vertex Array Object)
+        // Create VAO
         _vertexArray = GL.GenVertexArray();
         GL.BindVertexArray(_vertexArray);
 
-        // VBO stores the actual vertex data. (Vertex Buffer Object)
+        // Create VBO
         _vertexBuffer = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBuffer);
 
+        // Upload vertex data to GPU
         GL.BufferData(
             BufferTarget.ArrayBuffer,
             _vertices.Length * sizeof(float),
@@ -74,43 +71,40 @@ public class Game : GameWindow
 
         // Position: attribute 0
         // X, Y, Z = 3 floats
-        // One complete vertex = 6 floats
+        // One vertex = 5 floats
         GL.VertexAttribPointer(
             0,
             3,
             VertexAttribPointerType.Float,
             false,
-            6 * sizeof(float),
+            5 * sizeof(float),
             0
         );
 
         GL.EnableVertexAttribArray(0);
 
-        // Color: attribute 1
-        // R, G, B = 3 floats
-        // Color starts after the first 3 floats.
+        // Texture coordinates: attribute 1
+        // U, V = 2 floats
         GL.VertexAttribPointer(
             1,
-            3,
+            2,
             VertexAttribPointerType.Float,
             false,
-            6 * sizeof(float),
+            5 * sizeof(float),
             3 * sizeof(float)
         );
 
         GL.EnableVertexAttribArray(1);
     }
 
-    // Creates and compiles the shader program.
     private void InitializeShader()
     {
         _shader = new Shader("shader.vert", "shader.frag");
     }
 
-    // Starts the timer used for animations.
-    private void InitializeTimer()
+    private void InitializeTexture()
     {
-        _timer = Stopwatch.StartNew();
+        _texture = new Texture("Textures/bricks.jpeg");
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
@@ -127,23 +121,25 @@ public class Game : GameWindow
     {
         base.OnRenderFrame(args);
 
-        // Clear the previous frame.
+        // Clear previous frame
         GL.Clear(ClearBufferMask.ColorBufferBit);
 
-        // Select our shader program.
+        // Use shader
         _shader.Use();
 
-        // Select our vertex configuration.
+        // Use texture
+        _texture.Use();
+
+        // Use vertex configuration
         GL.BindVertexArray(_vertexArray);
 
-        // Draw 3 vertices as one triangle.
+        // Draw 6 vertices = 2 triangles = 1 square
         GL.DrawArrays(
             PrimitiveType.Triangles,
             0,
-            3
+            6
         );
 
-        // Show the rendered frame.
         SwapBuffers();
     }
 
@@ -156,7 +152,6 @@ public class Game : GameWindow
 
     protected override void OnUnload()
     {
-        // Free GPU resources.
         GL.DeleteBuffer(_vertexBuffer);
         GL.DeleteVertexArray(_vertexArray);
 
