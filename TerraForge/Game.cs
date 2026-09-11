@@ -1,4 +1,6 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using System.Diagnostics;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -16,7 +18,11 @@ public class Game : GameWindow
     private readonly Texture _texture;
     private readonly Texture _texture2;
 
+    private Stopwatch _timer;
+
     private const int VertexSize = 5;
+
+    private double _angle;
 
     private readonly float[] _vertices =
     {
@@ -62,6 +68,9 @@ public class Game : GameWindow
         _shader.Use();
         _shader.SetInt("texture0", 0);
         _shader.SetInt("texture1", 1);
+        
+        _timer = new Stopwatch();
+        _timer.Start();
 
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     }
@@ -148,7 +157,16 @@ public class Game : GameWindow
         // Use textures
         _texture.Use(TextureUnit.Texture0);
         _texture2.Use(TextureUnit.Texture1);
-
+        
+        // _angle
+        _angle += 120 * args.Time;
+        
+        Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((float)_angle));
+        Matrix4 scale = Matrix4.CreateScale(0.5f, 0.5f, 0.5f);
+        Matrix4 trans = rotation * scale;
+        
+        _shader.SetMatrix4("transform", trans);
+        
         GL.DrawElements(
             PrimitiveType.Triangles,
             _indices.Length,

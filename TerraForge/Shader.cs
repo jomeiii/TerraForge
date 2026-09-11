@@ -1,4 +1,5 @@
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 
 namespace TerraForge;
 
@@ -127,5 +128,12 @@ public class Shader : IDisposable
     {
         Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    public void SetMatrix4(string name, Matrix4 matrix)
+    {
+        GL.UseProgram(Handle);
+        int location = GL.GetUniformLocation(Handle, name);
+        GL.UniformMatrix4(location, true, ref matrix);
     }
 }
