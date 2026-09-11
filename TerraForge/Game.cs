@@ -29,10 +29,10 @@ public class Game : GameWindow
         // Position          // Texture coordinates
 
         // Four vertices
-        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f, // top left
-         0.5f,  0.5f, 0.0f,  1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f  // bottom left
+        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, // top left
+        0.5f, 0.5f, 0.0f, 1.0f, 1.0f, // top right
+        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f // bottom left
     };
 
     private readonly uint[] _indices =
@@ -68,7 +68,7 @@ public class Game : GameWindow
         _shader.Use();
         _shader.SetInt("texture0", 0);
         _shader.SetInt("texture1", 1);
-        
+
         _timer = new Stopwatch();
         _timer.Start();
 
@@ -157,16 +157,18 @@ public class Game : GameWindow
         // Use textures
         _texture.Use(TextureUnit.Texture0);
         _texture2.Use(TextureUnit.Texture1);
-        
-        // _angle
-        _angle += 120 * args.Time;
-        
-        Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((float)_angle));
-        Matrix4 scale = Matrix4.CreateScale(0.5f, 0.5f, 0.5f);
-        Matrix4 trans = rotation * scale;
-        
-        _shader.SetMatrix4("transform", trans);
-        
+
+        // world matrix
+        Matrix4 model = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(-55.0f));
+        Matrix4 view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
+        Matrix4 projection =
+            Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), 
+                Size.X / Size.Y, 0.1f, 100.0f);
+
+        _shader.SetMatrix4("model", model);
+        _shader.SetMatrix4("view", view);
+        _shader.SetMatrix4("projection", projection);
+
         GL.DrawElements(
             PrimitiveType.Triangles,
             _indices.Length,
