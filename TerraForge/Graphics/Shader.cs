@@ -1,7 +1,7 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace TerraForge;
+namespace TerraForge.Graphics;
 
 public class Shader : IDisposable
 {

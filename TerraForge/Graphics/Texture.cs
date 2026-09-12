@@ -1,9 +1,9 @@
 using OpenTK.Graphics.OpenGL4;
 using StbImageSharp;
 
-namespace TerraForge;
+namespace TerraForge.Graphics;
 
-public class Texture
+public class Texture : IDisposable
 {
     public int Handle { get; }
 
@@ -47,9 +47,18 @@ public class Texture
         );
     }
 
-    public void Use(TextureUnit unit = TextureUnit.Texture0)
+    public void Use(
+        TextureUnit unit = TextureUnit.Texture0)
     {
         GL.ActiveTexture(unit);
-        GL.BindTexture(TextureTarget.Texture2D, Handle);
+        GL.BindTexture(
+            TextureTarget.Texture2D,
+            Handle
+        );
+    }
+
+    public void Dispose()
+    {
+        GL.DeleteTexture(Handle);
     }
 }
