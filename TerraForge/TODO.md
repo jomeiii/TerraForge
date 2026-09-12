@@ -1,0 +1,3 @@
+- [ ] Edit player movement. 
+- Create keyboard movement vector2 variable.
+- 

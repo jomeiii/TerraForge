@@ -9,11 +9,16 @@ public class Texture : IDisposable
 
     public Texture(string path)
     {
+        string fullPath = Path.Combine(
+            AppContext.BaseDirectory,
+            path
+        );
+
         Handle = GL.GenTexture();
 
         StbImage.stbi_set_flip_vertically_on_load(1);
 
-        using FileStream stream = File.OpenRead(path);
+        using FileStream stream = File.OpenRead(fullPath);
 
         ImageResult image = ImageResult.FromStream(
             stream,

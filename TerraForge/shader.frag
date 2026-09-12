@@ -5,9 +5,22 @@ out vec4 outputColor;
 in vec2 texCoord;
 
 uniform sampler2D texture0;
-uniform sampler2D texture1;
+uniform vec3 blockColor;
+uniform bool useBlockColor;
 
 void main()
 {
-    outputColor = mix(texture(texture0, texCoord), texture(texture1, texCoord), 0.5);
+    vec4 textureColor = texture(texture0, texCoord);
+
+    if (useBlockColor)
+    {
+        outputColor = vec4(
+        textureColor.rgb * blockColor,
+        textureColor.a
+        );
+    }
+    else
+    {
+        outputColor = textureColor;
+    }
 }

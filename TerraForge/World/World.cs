@@ -1,32 +1,26 @@
 using OpenTK.Mathematics;
 using TerraForge.Graphics;
+using TerraForge.World.Blocks;
 
 namespace TerraForge.World;
 
 public class World
 {
     private readonly Cube[] _cubes;
+    private readonly Shader _shader;
 
-    public World(Mesh mesh, Texture texture)
+    public World(Mesh mesh, Texture texture, Texture sideTexture, Texture bottonTexture, Texture topTexture,
+        Texture sideOverlay ,Shader shader, Colormap colormap)
     {
-        _cubes = new Cube[10 * 10 * 10];
+        _shader = shader;
 
-        int index = 0;
-
-        for (int x = 0; x < 10; x++)
-        {
-            for (int y = 0; y < 10; y++)
-            {
-                for (int z = 0; z < 10; z++)
-                {
-                    _cubes[index++] = new Cube(
-                        mesh,
-                        texture,
-                        new Vector3(x, y, z)
-                    );
-                }
-            }
-        }
+        _cubes = new Cube[2];
+        Stone stone = new Stone(mesh, texture, new Vector3(3, -1, 3));
+        
+        Grass grass = new Grass(mesh, topTexture, sideTexture, bottonTexture,sideOverlay, new Vector3(0, -1, 2), colormap);
+        
+        _cubes[0] = stone;
+        _cubes[1] = grass;
     }
 
     public void Draw(Shader shader)
@@ -38,7 +32,7 @@ public class World
                 cube.GetModelMatrix()
             );
 
-            cube.Draw();
+            cube.Draw(_shader);
         }
     }
 }

@@ -6,20 +6,14 @@ namespace TerraForge.World;
 public class Cube
 {
     public Mesh Mesh { get; }
-    public Texture Texture { get; }
 
     public Vector3 Position { get; set; }
     public Vector3 Rotation { get; set; }
     public Vector3 Scale { get; set; }
-
-    public Cube(
-        Mesh mesh,
-        Texture texture,
-        Vector3 position)
+    
+    public Cube(Mesh mesh, Vector3 position)
     {
         Mesh = mesh;
-        Texture = texture;
-
         Position = position;
         Rotation = Vector3.Zero;
         Scale = Vector3.One;
@@ -47,9 +41,8 @@ public class Cube
         return model;
     }
 
-    public void Draw()
+    public virtual void Draw(Shader shader)
     {
-        Texture.Use();
-        Mesh.Draw();
+        Mesh.Draw(Mesh.IndexCount, 0);
     }
 }

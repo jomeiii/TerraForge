@@ -136,4 +136,18 @@ public class Shader : IDisposable
         int location = GL.GetUniformLocation(Handle, name);
         GL.UniformMatrix4(location, true, ref matrix);
     }
+    
+    public void SetVector3(string name, Vector3 vector3)
+    {
+        GL.UseProgram(Handle);
+        int location = GL.GetUniformLocation(Handle, name);
+        GL.Uniform3(location, vector3);
+    }
+
+    public void SetBool(string name, bool value)
+    {
+        GL.UseProgram(Handle);
+        int location = GL.GetUniformLocation(Handle, name);
+        GL.Uniform1(location, value ? 1 : 0);
+    }
 }

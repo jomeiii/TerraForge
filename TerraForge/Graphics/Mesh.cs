@@ -6,18 +6,21 @@ public class Mesh : IDisposable
 {
     private readonly int _vertexArray;
     private readonly int _vertexBuffer;
+    private readonly int _elementBuffer;
 
-    public int VertexCount { get; }
+    public int IndexCount { get; }
 
-    public Mesh(float[] vertices)
+    public Mesh(float[] vertices, uint[] indices)
     {
-        VertexCount = vertices.Length / 5;
+        IndexCount = indices.Length;
 
         _vertexArray = GL.GenVertexArray();
         _vertexBuffer = GL.GenBuffer();
+        _elementBuffer = GL.GenBuffer();
 
         GL.BindVertexArray(_vertexArray);
 
+        // VBO
         GL.BindBuffer(
             BufferTarget.ArrayBuffer,
             _vertexBuffer
@@ -30,6 +33,20 @@ public class Mesh : IDisposable
             BufferUsageHint.StaticDraw
         );
 
+        // EBO
+        GL.BindBuffer(
+            BufferTarget.ElementArrayBuffer,
+            _elementBuffer
+        );
+
+        GL.BufferData(
+            BufferTarget.ElementArrayBuffer,
+            indices.Length * sizeof(uint),
+            indices,
+            BufferUsageHint.StaticDraw
+        );
+
+        // Position
         GL.VertexAttribPointer(
             0,
             3,
@@ -41,6 +58,7 @@ public class Mesh : IDisposable
 
         GL.EnableVertexAttribArray(0);
 
+        // Texture coordinates
         GL.VertexAttribPointer(
             1,
             2,
@@ -49,28 +67,25 @@ public class Mesh : IDisposable
             5 * sizeof(float),
             3 * sizeof(float)
         );
-
+        
         GL.EnableVertexAttribArray(1);
     }
 
-    public void Bind()
+    public void Draw(int indexCount, int indexOffset)
     {
         GL.BindVertexArray(_vertexArray);
-    }
 
-    public void Draw()
-    {
-        Bind();
-
-        GL.DrawArrays(
+        GL.DrawElements(
             PrimitiveType.Triangles,
-            0,
-            VertexCount
+            indexCount,
+            DrawElementsType.UnsignedInt,
+            indexOffset * sizeof(uint)
         );
     }
 
     public void Dispose()
     {
+        GL.DeleteBuffer(_elementBuffer);
         GL.DeleteBuffer(_vertexBuffer);
         GL.DeleteVertexArray(_vertexArray);
     }
