@@ -10,6 +10,7 @@
     <ItemGroup>
       <PackageReference Include="OpenTK" Version="4.9.4" />
       <PackageReference Include="StbImageSharp" Version="2.30.16" />
+      <PackageReference Include="Typography.OpenFont.NetCore" Version="1.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,6 +23,14 @@
         </None>
 
         <None Update="shader.frag">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+
+        <None Update="ui.vert">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+
+        <None Update="ui.frag">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>

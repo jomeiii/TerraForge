@@ -13,12 +13,17 @@ namespace TerraForge;
 
 public class Game : GameWindow
 {
+    private Font _font = null!;
+    
     private Shader _shader = null!;
     private Texture _sideTexture = null!;
     private Texture _sideOverlayTexture = null!;
     private Texture _topDirtTexture = null!;
     private Texture _bottomDirtTexture = null!;
     private Texture _stoneTexture = null!;
+    
+    private Shader _uiShader = null!;
+    private TextRenderer _textRenderer = null!;
 
     private Colormap _grassColorMap = null!;
 
@@ -45,8 +50,6 @@ public class Game : GameWindow
 
     protected override void OnLoad()
     {
-        Console.WriteLine($"Current directory: {Directory.GetCurrentDirectory()}");
-        
         base.OnLoad();
 
         GL.Enable(EnableCap.DepthTest);
@@ -58,6 +61,15 @@ public class Game : GameWindow
 
         CursorState = CursorState.Grabbed;
 
+        _font = new Font("Resources/Roboto-Bold.ttf");
+        
+        _uiShader = new Shader(
+            "ui.vert",
+            "ui.frag"
+        );
+
+        _textRenderer = new TextRenderer();
+        
         _shader = new Shader(
             "shader.vert",
             "shader.frag"
@@ -155,6 +167,35 @@ public class Game : GameWindow
         _shader.SetMatrix4("projection", _player.Camera.GetProjectionMatrix());
 
         _world.Draw(_shader);
+
+        GL.Disable(EnableCap.DepthTest);
+
+        _uiShader.Use();
+
+        _uiShader.SetMatrix4(
+            "projection",
+            Matrix4.CreateOrthographicOffCenter(
+                0,
+                Size.X,
+                0,
+                Size.Y,
+                -1,
+                1
+            )
+        );
+
+        _uiShader.SetVector4(
+            "color",
+            new Vector4(1f, 1f, 1f, 1f)
+        );
+
+        _textRenderer.Draw(
+            "HELLO",
+            100f,
+            100f
+            );
+        
+        GL.Enable(EnableCap.DepthTest);
 
         _fpsCounter.Update(e.Time);
 
