@@ -61,7 +61,7 @@ public class Game : GameWindow
 
         CursorState = CursorState.Grabbed;
 
-        _font = new Font("Resources/Roboto-Bold.ttf");
+        _font = new Font("Resources/Roboto-Bold.ttf", 48);
         
         _uiShader = new Shader(
             "ui.vert",
@@ -168,8 +168,6 @@ public class Game : GameWindow
 
         _world.Draw(_shader);
 
-        GL.Disable(EnableCap.DepthTest);
-
         _uiShader.Use();
 
         _uiShader.SetMatrix4(
@@ -177,27 +175,12 @@ public class Game : GameWindow
             Matrix4.CreateOrthographicOffCenter(
                 0,
                 Size.X,
-                0,
                 Size.Y,
+                0,
                 -1,
                 1
             )
         );
-
-        _uiShader.SetVector4(
-            "color",
-            new Vector4(1f, 1f, 1f, 1f)
-        );
-
-        _textRenderer.Draw(
-            "HELLO",
-            100f,
-            100f
-            );
-        
-        GL.Enable(EnableCap.DepthTest);
-
-        _fpsCounter.Update(e.Time);
 
         SwapBuffers();
     }
