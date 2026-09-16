@@ -14,14 +14,14 @@ namespace TerraForge;
 public class Game : GameWindow
 {
     private Font _font = null!;
-    
+
     private Shader _shader = null!;
     private Texture _sideTexture = null!;
     private Texture _sideOverlayTexture = null!;
     private Texture _topDirtTexture = null!;
     private Texture _bottomDirtTexture = null!;
     private Texture _stoneTexture = null!;
-    
+
     private Shader _uiShader = null!;
     private TextRenderer _textRenderer = null!;
 
@@ -61,15 +61,17 @@ public class Game : GameWindow
 
         CursorState = CursorState.Grabbed;
 
-        _font = new Font("Resources/Roboto-Bold.ttf", 48);
+        _font = new Font("Resources/Roboto-Bold.ttf", 500);
         
+        Console.WriteLine("FONT CREATED");
+
         _uiShader = new Shader(
             "ui.vert",
             "ui.frag"
         );
 
         _textRenderer = new TextRenderer();
-        
+
         _shader = new Shader(
             "shader.vert",
             "shader.frag"
@@ -78,15 +80,15 @@ public class Game : GameWindow
         _grassColorMap = new Colormap(
             "Resources/minecraft/textures/colormap/grass.png"
         );
-        
+
         _sideTexture = new Texture(
             "Resources/minecraft/textures/block/grass_block_side.png"
         );
 
         _sideOverlayTexture = new Texture(
             "Resources/minecraft/textures/block/grass_block_side_overlay.png"
-            );
-        
+        );
+
         _bottomDirtTexture = new Texture(
             "Resources/minecraft/textures/block/dirt.png"
         );
@@ -102,14 +104,14 @@ public class Game : GameWindow
         _cubeMesh = CubeMesh.Create();
 
         _world = new World.World(
-            mesh:_cubeMesh,
-            texture:_stoneTexture,
+            mesh: _cubeMesh,
+            texture: _stoneTexture,
             sideTexture: _sideTexture,
             bottonTexture: _bottomDirtTexture,
             topTexture: _topDirtTexture,
-            sideOverlay:_sideOverlayTexture,
-            shader:_shader,
-            colormap:_grassColorMap
+            sideOverlay: _sideOverlayTexture,
+            shader: _shader,
+            colormap: _grassColorMap
         );
 
         _player = new Player.Player(
@@ -169,7 +171,6 @@ public class Game : GameWindow
         _world.Draw(_shader);
 
         _uiShader.Use();
-
         _uiShader.SetMatrix4(
             "projection",
             Matrix4.CreateOrthographicOffCenter(
@@ -180,7 +181,9 @@ public class Game : GameWindow
                 -1,
                 1
             )
-        );
+        );  
+        _uiShader.SetInt("textTexture", 0);
+        _uiShader.SetVector4("color", new Vector4(1f, 1f, 1f, 1f));
 
         SwapBuffers();
     }
