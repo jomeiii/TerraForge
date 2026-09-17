@@ -8,13 +8,10 @@ namespace TerraForge.Camera
         private Vector3 _up = Vector3.UnitY;
         private Vector3 _right = Vector3.UnitX;
 
-        // Rotation around the X axis (radians)
         private float _pitch;
 
-        // Rotation around the Y axis (radians)
-        private float _yaw = -MathHelper.PiOver2; // Without this, you would be started rotated 90 degrees right.
+        private float _yaw = -MathHelper.PiOver2;
 
-        // The field of view of the camera (radians)
         private float _fov = MathHelper.PiOver4;
 
         public Camera(Vector3 position, float aspectRatio)
@@ -23,10 +20,8 @@ namespace TerraForge.Camera
             AspectRatio = aspectRatio;
         }
 
-        // The position of the camera
         public Vector3 Position { get; set; }
 
-        // This is simply the aspect ratio of the viewport, used for the projection matrix.
         public float AspectRatio { private get; set; }
 
         public Vector3 Front => _front;
@@ -35,7 +30,6 @@ namespace TerraForge.Camera
 
         public Vector3 Right => _right;
 
-        // We convert from degrees to radians as soon as the property is set to improve performance.
         public float Pitch
         {
             get => MathHelper.RadiansToDegrees(_pitch);
@@ -47,7 +41,6 @@ namespace TerraForge.Camera
             }
         }
 
-        // We convert from degrees to radians as soon as the property is set to improve performance.
         public float Yaw
         {
             get => MathHelper.RadiansToDegrees(_yaw);
@@ -58,10 +51,6 @@ namespace TerraForge.Camera
             }
         }
 
-        // The field of view (FOV) is the vertical angle of the camera view.
-        // This has been discussed more in depth in a previous tutorial,
-        // but in this tutorial, you have also learned how we can use this to simulate a zoom feature.
-        // We convert from degrees to radians as soon as the property is set to improve performance.
         public float Fov
         {
             get => MathHelper.RadiansToDegrees(_fov);
@@ -72,19 +61,16 @@ namespace TerraForge.Camera
             }
         }
 
-        // Get the view matrix using the amazing LookAt function described more in depth on the web tutorials
         public Matrix4 GetViewMatrix()
         {
             return Matrix4.LookAt(Position, Position + _front, _up);
         }
 
-        // Get the projection matrix using the same method we have used up until this point
         public Matrix4 GetProjectionMatrix()
         {
             return Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, 0.01f, 100f);
         }
 
-        // This function is going to update the direction vertices using some of the math learned in the web tutorials.
         private void UpdateVectors()
         {
             _front.X = MathF.Cos(_yaw) * MathF.Cos(_pitch);

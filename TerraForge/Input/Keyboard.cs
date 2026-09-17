@@ -3,7 +3,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace TerraForge.Input;
 
-    public class Keyboard
+public class Keyboard
 {
     private readonly TerraForge.Camera.Camera _camera;
 
@@ -18,38 +18,39 @@ namespace TerraForge.Input;
     {
         float dt = (float)deltaTime;
 
-        if (input.IsKeyDown(Keys.W))
-        {
-            _camera.Position += _camera.Front * Speed * dt;
-        }
-
-        if (input.IsKeyDown(Keys.S))
-        {
-            _camera.Position -= _camera.Front * Speed * dt;
-        }
-
-        Vector3 right = Vector3.Normalize(
-            Vector3.Cross(_camera.Front, _camera.Up)
-        );
-
-        if (input.IsKeyDown(Keys.A))
-        {
-            _camera.Position -= right * Speed * dt;
-        }
-
-        if (input.IsKeyDown(Keys.D))
-        {
-            _camera.Position += right * Speed * dt;
-        }
+        var playerFront = new Vector3(_camera.Front.X, 0, _camera.Front.Z).Normalized();
+        Vector3 right = Vector3.Normalize(Vector3.Cross(playerFront, _camera.Up));
 
         if (input.IsKeyDown(Keys.Space))
         {
-            _camera.Position += _camera.Up * Speed * dt;
+            var cameraPosition = _camera.Position;
+            cameraPosition.Y += Speed * dt;
+            _camera.Position = cameraPosition;
         }
 
         if (input.IsKeyDown(Keys.LeftShift))
         {
-            _camera.Position -= _camera.Up * Speed * dt;
+            var cameraPosition = _camera.Position;
+            cameraPosition.Y -= Speed * dt;
+            _camera.Position = cameraPosition;
         }
+
+        Vector3 direction = Vector3.Zero;
+        if (input.IsKeyDown(Keys.W))
+            direction += playerFront;
+
+        if (input.IsKeyDown(Keys.S))
+            direction -= playerFront;
+
+        if (input.IsKeyDown(Keys.A))
+            direction -= right;
+
+        if (input.IsKeyDown(Keys.D))
+            direction += right;
+
+        if (direction.LengthSquared > 0)
+            direction = direction.Normalized();
+
+        _camera.Position += direction * Speed * dt;
     }
 }
