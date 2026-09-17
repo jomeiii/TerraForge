@@ -21,7 +21,7 @@ public class UI : IDisposable
 
         _font = new Font(
             "Resources/Roboto-Bold.ttf",
-            16
+            18
         );
 
         _textRenderer = new TextRenderer();
@@ -51,12 +51,12 @@ public class UI : IDisposable
         );
     }
 
-    public void DrawText(string text, float x, float y, Vector3 color)
+    public void DrawText(string text, float x, float y, uint lineUpperCount, Color color)
     {
         _shader.Use();
-        _shader.SetVector3("textColor", color);
+        _shader.SetColor("textColor", color);
         _font.Bind();
-        _textRenderer.Draw(text, x, _font.FontSize + y, _font);
+        _textRenderer.Draw(text, x, _font.FontSize + y + _font.LineHeight * lineUpperCount, _font);
     }
 
     public void Dispose()

@@ -144,6 +144,13 @@ public class Shader : IDisposable
         GL.Uniform3(location, vector3);
     }
 
+    public void SetColor(string name, Color color)
+    {
+        GL.UseProgram(Handle);
+        int location = GL.GetUniformLocation(Handle, name);
+        GL.Uniform4(location, new Vector4(color.R, color.G, color.B, color.A));
+    }
+
     public void SetBool(string name, bool value)
     {
         GL.UseProgram(Handle);

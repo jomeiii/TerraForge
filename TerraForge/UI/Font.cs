@@ -9,6 +9,7 @@ namespace TerraForge.UI;
 public unsafe class Font
 {
     public uint FontSize { get; }
+    public float LineHeight { get; }
 
     private FT_LibraryRec_* _library;
     private FT_FaceRec_* _face;
@@ -37,6 +38,7 @@ public unsafe class Font
         Marshal.FreeHGlobal(pathPtr);
         _face = face;
 
+        
         if (error != FT_Error.FT_Err_Ok)
             throw new Exception($"Failed to load font: {error}");
 
@@ -48,6 +50,8 @@ public unsafe class Font
 
         if (error != FT_Error.FT_Err_Ok)
             throw new Exception($"Failed to set font size: {error}");
+        
+        LineHeight = _face->size->metrics.height.ToInt32() / 64f;
         
         _glyphs = new Dictionary<char, Glyph>();
         _atlas = new byte[_atlasSize * _atlasSize];

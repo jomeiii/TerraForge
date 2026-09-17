@@ -3,6 +3,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using TerraForge.Graphics;
 using TerraForge.Input;
 using TerraForge.Player;
 using TerraForge.UI;
@@ -18,7 +19,7 @@ public class Game : GameWindow
     private PlayerController _playerController = null!;
     private Keyboard _keyboard = null!;
     private Mouse _mouse = null!;
-    
+
     private World.World _world = null!;
     private WorldRenderer _worldRenderer = null!;
     private WorldReference _worldReference = null!;
@@ -57,7 +58,7 @@ public class Game : GameWindow
         _world = new World.World(_worldReference);
         _worldRenderer = new WorldRenderer(_player.Camera);
 
-        _keyboard = new Keyboard(_player.Camera);
+        _keyboard = new Keyboard(_player.Camera, _playerController);
         _mouse = new Mouse(_player.Camera);
         _fpsCounter = new FpsCounter();
     }
@@ -88,8 +89,13 @@ public class Game : GameWindow
         _fpsCounter.Update(e.Time);
         _worldRenderer.Draw(_world);
 
-        _ui.DrawText($"FPS: {_fpsCounter.FPS}", 5f, 5f, new Vector3(211f / 256, 211f / 256, 211f / 256));
-        _ui.DrawText("Hello pidoras", 5f, _ui.Font.FontSize + 10f, new Vector3(1f, 0f, 0f));
+        Color consoleColor = new Color(211, 211, 211, 0.7f);
+        uint lineUpperCount = 0;
+        _ui.DrawText("TerraForge", 5f, 10f, lineUpperCount++, consoleColor);
+        _ui.DrawText($"FPS: {_fpsCounter.FPS}", 5f, 10f, lineUpperCount++, consoleColor);
+        _ui.DrawText($"X: {_player.Position.X}", 5f, 10f, lineUpperCount++, consoleColor);
+        _ui.DrawText($"Y: {_player.Position.Y}", 5f, 10f, lineUpperCount++, consoleColor);
+        _ui.DrawText($"Z: {_player.Position.Z}", 5f, 10f, lineUpperCount, consoleColor);
 
         SwapBuffers();
     }

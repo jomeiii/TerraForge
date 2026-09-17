@@ -4,11 +4,11 @@ in vec2 TexCoord;
 
 out vec4 outputColor;
 
-uniform vec3 textColor;
+uniform vec4 textColor;
 uniform sampler2D textTexture;
 
 void main()
 {
     float alpha = texture(textTexture, TexCoord).r;
-    outputColor = vec4(textColor.rgb, alpha);
+    outputColor = vec4(textColor.rgb, alpha * textColor.w);
 }

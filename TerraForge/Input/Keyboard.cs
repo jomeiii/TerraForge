@@ -1,17 +1,20 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using TerraForge.Player;
 
 namespace TerraForge.Input;
 
 public class Keyboard
 {
     private readonly TerraForge.Camera.Camera _camera;
+    private readonly PlayerController _playerController;
 
     public float Speed { get; set; } = 5.0f;
 
-    public Keyboard(TerraForge.Camera.Camera camera)
+    public Keyboard(TerraForge.Camera.Camera camera, PlayerController playerController)
     {
         _camera = camera;
+        _playerController = playerController;
     }
 
     public void Update(KeyboardState input, double deltaTime)
