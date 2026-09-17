@@ -54,12 +54,14 @@ public class Game : GameWindow
             Size.X / (float)Size.Y
         );
 
+        _keyboard = new Keyboard();
+        _playerController = new PlayerController(_keyboard, _player);
+
         _worldReference = new WorldReference();
         _world = new World.World(_worldReference);
         _worldRenderer = new WorldRenderer(_player.Camera);
 
-        _keyboard = new Keyboard(_player.Camera, _playerController);
-        _mouse = new Mouse(_player.Camera);
+        _mouse = new Mouse(_player);
         _fpsCounter = new FpsCounter();
     }
 
@@ -70,8 +72,10 @@ public class Game : GameWindow
         if (!IsFocused)
             return;
 
-        _keyboard.Update(KeyboardState, e.Time);
+        _keyboard.Update(KeyboardState);
         _mouse.Update(MouseState);
+        
+        _playerController.Update(e.Time);
 
         if (KeyboardState.IsKeyDown(Keys.Escape))
             Close();
@@ -93,9 +97,8 @@ public class Game : GameWindow
         uint lineUpperCount = 0;
         _ui.DrawText("TerraForge", 5f, 10f, lineUpperCount++, consoleColor);
         _ui.DrawText($"FPS: {_fpsCounter.FPS}", 5f, 10f, lineUpperCount++, consoleColor);
-        _ui.DrawText($"X: {_player.Position.X}", 5f, 10f, lineUpperCount++, consoleColor);
-        _ui.DrawText($"Y: {_player.Position.Y}", 5f, 10f, lineUpperCount++, consoleColor);
-        _ui.DrawText($"Z: {_player.Position.Z}", 5f, 10f, lineUpperCount, consoleColor);
+        _ui.DrawText($"XYZ: {_player.Position.X:F2} {_player.Position.Y:F2} {_player.Position.Z:F2}", 5f, 10f, lineUpperCount++, consoleColor);
+        _ui.DrawText($"Yaw: {_player.Yaw:F2} Pitch: {_player.Camera.Pitch:F2}", 5f, 10f, lineUpperCount, consoleColor);
 
         SwapBuffers();
     }

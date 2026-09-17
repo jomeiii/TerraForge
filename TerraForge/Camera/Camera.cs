@@ -10,7 +10,7 @@ namespace TerraForge.Camera
 
         private float _pitch;
 
-        private float _yaw = -MathHelper.PiOver2;
+        private float _yaw;
 
         private float _fov = MathHelper.PiOver4;
 

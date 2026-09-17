@@ -6,15 +6,17 @@ namespace TerraForge.Input;
 public class Mouse
 {
     private readonly TerraForge.Camera.Camera _camera;
+    private readonly Player.Player _player;
 
     private Vector2 _lastPosition;
     private bool _firstMove = true;
 
     private const float Sensitivity = 0.1f;
 
-    public Mouse(TerraForge.Camera.Camera camera)
+    public Mouse(Player.Player player)
     {
-        _camera = camera;
+        _camera = player.Camera;
+        _player = player;
     }
 
     public void Update(MouseState mouse)
@@ -31,7 +33,7 @@ public class Mouse
 
         _lastPosition = new Vector2(mouse.X, mouse.Y);
 
-        _camera.Yaw += deltaX * Sensitivity;
+        _player.Yaw += deltaX * Sensitivity;
         _camera.Pitch -= deltaY * Sensitivity;
     }
 }
