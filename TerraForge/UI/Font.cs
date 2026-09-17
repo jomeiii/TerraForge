@@ -8,6 +8,8 @@ namespace TerraForge.UI;
 
 public unsafe class Font
 {
+    public uint FontSize { get; }
+
     private FT_LibraryRec_* _library;
     private FT_FaceRec_* _face;
     private int _texture;
@@ -23,6 +25,8 @@ public unsafe class Font
 
     public Font(string path, uint size)
     {
+        FontSize = size;
+        
         FT_LibraryRec_* library = null;
         FT_Init_FreeType(&library);
         _library = library;

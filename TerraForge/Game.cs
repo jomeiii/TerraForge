@@ -61,9 +61,7 @@ public class Game : GameWindow
 
         CursorState = CursorState.Grabbed;
 
-        _font = new Font("Resources/Roboto-Bold.ttf", 64);
-        
-        Console.WriteLine("FONT CREATED");
+        _font = new Font("Resources/Roboto-Bold.ttf", 16);
 
         _uiShader = new Shader(
             "ui.vert",
@@ -163,6 +161,8 @@ public class Game : GameWindow
             ClearBufferMask.DepthBufferBit
         );
 
+        _fpsCounter.Update(e.Time);
+
         _shader.Use();
 
         _shader.SetMatrix4("view", _player.Camera.GetViewMatrix());
@@ -183,11 +183,12 @@ public class Game : GameWindow
             )
         );
         _uiShader.SetInt("textTexture", 0);
-        _uiShader.SetVector4("color", new Vector4(1f, 1f, 1f, 1f));
+        _uiShader.SetVector3("textColor", new Vector3(211f/256, 211f/256, 211f/256));
         GL.Enable(EnableCap.Blend);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         _font.Bind();
-        _textRenderer.Draw("Hello pidoras", 100f, 100f, _font);
+        _textRenderer.Draw($"FPS: {_fpsCounter.FPS}", 5f, _font.FontSize + 5f, _font);
+        _textRenderer.Draw("Hello pidoras", 5f, _font.FontSize * 2 + 10f, _font);
         SwapBuffers();
     }
 
