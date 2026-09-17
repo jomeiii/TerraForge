@@ -54,7 +54,7 @@ public class Game : GameWindow
         _ui = new UI.UI(Size.X, Size.Y);
 
         _player = new Player.Player(
-            new Vector3(0, 0, 10),
+            new Vector3(0, 0, 0),
             Size.X / (float)Size.Y
         );
 
@@ -109,7 +109,8 @@ public class Game : GameWindow
         _ui.DrawText("TerraForge", 5f, 10f, lineUpperCount++, consoleColor);
         _ui.DrawText($"FPS: {_fpsCounter.FPS}", 5f, 10f, lineUpperCount++, consoleColor);
         _ui.DrawText($"XYZ: {_player.Position.X:F2} {_player.Position.Y:F2} {_player.Position.Z:F2}", 5f, 10f, lineUpperCount++, consoleColor);
-        _ui.DrawText($"Yaw: {_player.Yaw:F2} Pitch: {_player.Camera.Pitch:F2}", 5f, 10f, lineUpperCount, consoleColor);
+        _ui.DrawText($"Yaw: {_player.Yaw:F2} Pitch: {_player.Camera.Pitch:F2}", 5f, 10f, lineUpperCount++, consoleColor);
+        _ui.DrawText($"Velocity: {_player.Velocity}", 5f, 10f, lineUpperCount, consoleColor);
 
         SwapBuffers();
     }

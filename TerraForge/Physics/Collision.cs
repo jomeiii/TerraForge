@@ -34,4 +34,17 @@ public static class Collision
 
         return false;
     }
+    
+    public static bool IsStandingOn(AABB player, AABB block)
+    {
+        bool xOverlap = player.Max.X > block.Min.X &&
+                        player.Min.X < block.Max.X;
+
+        bool zOverlap = player.Max.Z > block.Min.Z &&
+                        player.Min.Z < block.Max.Z;
+
+        bool onTop = MathF.Abs(player.Min.Y - block.Max.Y) < 0.01f;
+
+        return xOverlap && zOverlap && onTop;
+    }
 }
