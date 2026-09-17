@@ -7,18 +7,27 @@ namespace TerraForge.World;
 public class World
 {
     private readonly Cube[] _cubes;
-    private readonly Shader _shader;
 
-    public World(Mesh mesh, Texture texture, Texture sideTexture, Texture bottonTexture, Texture topTexture,
-        Texture sideOverlay ,Shader shader, Colormap colormap)
+    public World(WorldReference worldReference)
     {
-        _shader = shader;
-
         _cubes = new Cube[2];
-        Stone stone = new Stone(mesh, texture, new Vector3(3, -1, 3));
-        
-        Grass grass = new Grass(mesh, topTexture, sideTexture, bottonTexture,sideOverlay, new Vector3(0, -1, 2), colormap);
-        
+
+        Stone stone = new Stone(
+            worldReference.CubeMesh,
+            worldReference.StoneTexture,
+            new Vector3(3, -1, 3)
+        );
+
+        Grass grass = new Grass(
+            worldReference.CubeMesh,
+            worldReference.TopDirtTexture,
+            worldReference.SideTexture,
+            worldReference.BottomDirtTexture,
+            worldReference.SideOverlayTexture,
+            new Vector3(0, -1, 2),
+            worldReference.GrassColorMap
+        );
+
         _cubes[0] = stone;
         _cubes[1] = grass;
     }
@@ -32,7 +41,7 @@ public class World
                 cube.GetModelMatrix()
             );
 
-            cube.Draw(_shader);
+            cube.Draw(shader);
         }
     }
 }

@@ -98,7 +98,7 @@ public unsafe class Font
                 new Vector2((float)(offsetX + width) / _atlasSize,
                     (float)(offsetY + height) / _atlasSize));
             
-            Console.WriteLine($"Added glyph: '{c}'");
+            // Console.WriteLine($"Added glyph: '{c}'");
 
             for (int y = 0; y < height; y++)
             {
