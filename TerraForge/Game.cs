@@ -5,6 +5,7 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using TerraForge.Graphics;
 using TerraForge.Input;
+using TerraForge.Physics;
 using TerraForge.Player;
 using TerraForge.UI;
 using TerraForge.World;
@@ -13,6 +14,8 @@ namespace TerraForge;
 
 public class Game : GameWindow
 {
+    private PhysicsSystem _physics;
+    
     private UI.UI _ui = null!;
 
     private Player.Player _player = null!;
@@ -47,6 +50,7 @@ public class Game : GameWindow
 
         CursorState = CursorState.Grabbed;
 
+        _physics = new();
         _ui = new UI.UI(Size.X, Size.Y);
 
         _player = new Player.Player(
@@ -72,10 +76,17 @@ public class Game : GameWindow
         if (!IsFocused)
             return;
 
+        if (KeyboardState.IsKeyPressed(Keys.Tab))
+        {
+            _mouse.FirstMove = true;
+            CursorState = (CursorState == CursorState.Grabbed) ? CursorState.Normal : CursorState.Grabbed;
+        }
+
         _keyboard.Update(KeyboardState);
         _mouse.Update(MouseState);
-        
+
         _playerController.Update(e.Time);
+        _physics.Update(_player, _world, e.Time);
 
         if (KeyboardState.IsKeyDown(Keys.Escape))
             Close();

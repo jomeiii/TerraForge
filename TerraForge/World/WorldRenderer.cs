@@ -24,6 +24,16 @@ public class WorldRenderer
         _shader.Use();
         _shader.SetMatrix4("view", _camera.GetViewMatrix());
         _shader.SetMatrix4("projection", _camera.GetProjectionMatrix());
-        world.Draw(_shader);
+        
+        foreach (Cube cube in world.Cubes)
+        {
+            _shader.SetMatrix4(
+                "model",
+                cube.GetModelMatrix()
+            );
+
+            cube.Draw(_shader);
+        }
+        
     }
 }

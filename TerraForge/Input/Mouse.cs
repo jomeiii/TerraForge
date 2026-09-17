@@ -9,7 +9,7 @@ public class Mouse
     private readonly Player.Player _player;
 
     private Vector2 _lastPosition;
-    private bool _firstMove = true;
+    public bool FirstMove { get; set; } = true;
 
     private const float Sensitivity = 0.1f;
 
@@ -21,10 +21,10 @@ public class Mouse
 
     public void Update(MouseState mouse)
     {
-        if (_firstMove)
+        if (FirstMove)
         {
             _lastPosition = new Vector2(mouse.X, mouse.Y);
-            _firstMove = false;
+            FirstMove = false;
             return;
         }
 
@@ -34,6 +34,7 @@ public class Mouse
         _lastPosition = new Vector2(mouse.X, mouse.Y);
 
         _player.Yaw += deltaX * Sensitivity;
+        _player.Yaw %= 360;
         _camera.Pitch -= deltaY * Sensitivity;
     }
 }

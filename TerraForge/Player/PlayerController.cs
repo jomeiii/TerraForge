@@ -1,5 +1,6 @@
 using OpenTK.Mathematics;
 using TerraForge.Input;
+using TerraForge.Physics;
 
 namespace TerraForge.Player;
 
@@ -29,7 +30,8 @@ public class PlayerController
         if (movement.LengthSquared > 0)
             movement = movement.Normalized();
 
-        _player.Position += movement * _speed * (float)deltaTime;
+        movement *= (float)(_speed * deltaTime);
+        _player.Movement = movement;
         
         _player.Update();
     }

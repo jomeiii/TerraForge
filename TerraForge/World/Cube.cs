@@ -1,10 +1,13 @@
 using OpenTK.Mathematics;
 using TerraForge.Graphics;
+using TerraForge.Physics;
 
 namespace TerraForge.World;
 
 public class Cube
 {
+    public AABB AABB { get; }
+
     public Mesh Mesh { get; }
 
     public Vector3 Position { get; set; }
@@ -17,6 +20,8 @@ public class Cube
         Position = position;
         Rotation = Vector3.Zero;
         Scale = Vector3.One;
+        
+        AABB = new AABB(position, Scale);
     }
 
     public Matrix4 GetModelMatrix()

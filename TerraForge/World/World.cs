@@ -1,5 +1,4 @@
 using OpenTK.Mathematics;
-using TerraForge.Graphics;
 using TerraForge.World.Blocks;
 
 namespace TerraForge.World;
@@ -7,6 +6,8 @@ namespace TerraForge.World;
 public class World
 {
     private readonly Cube[] _cubes;
+
+    public Cube[] Cubes => _cubes;
 
     public World(WorldReference worldReference)
     {
@@ -30,18 +31,5 @@ public class World
 
         _cubes[0] = stone;
         _cubes[1] = grass;
-    }
-
-    public void Draw(Shader shader)
-    {
-        foreach (Cube cube in _cubes)
-        {
-            shader.SetMatrix4(
-                "model",
-                cube.GetModelMatrix()
-            );
-
-            cube.Draw(shader);
-        }
     }
 }
