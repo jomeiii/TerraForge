@@ -61,7 +61,7 @@ public class Game : GameWindow
 
         CursorState = CursorState.Grabbed;
 
-        _font = new Font("Resources/Roboto-Bold.ttf", 500);
+        _font = new Font("Resources/Roboto-Bold.ttf", 64);
         
         Console.WriteLine("FONT CREATED");
 
@@ -181,10 +181,13 @@ public class Game : GameWindow
                 -1,
                 1
             )
-        );  
+        );
         _uiShader.SetInt("textTexture", 0);
         _uiShader.SetVector4("color", new Vector4(1f, 1f, 1f, 1f));
-
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+        _font.Bind();
+        _textRenderer.Draw("Hello pidoras", 100f, 100f, _font);
         SwapBuffers();
     }
 
