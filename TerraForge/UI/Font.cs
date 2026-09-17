@@ -165,4 +165,9 @@ public unsafe class Font
     {
         return _glyphs.TryGetValue(c, out glyph);
     }
+    
+    public void Dispose()
+    {
+        GL.DeleteTexture(_texture);
+    }
 }

@@ -13,8 +13,6 @@ namespace TerraForge;
 
 public class Game : GameWindow
 {
-    private Font _font = null!;
-
     private Shader _shader = null!;
     private Texture _sideTexture = null!;
     private Texture _sideOverlayTexture = null!;
@@ -22,8 +20,7 @@ public class Game : GameWindow
     private Texture _bottomDirtTexture = null!;
     private Texture _stoneTexture = null!;
 
-    private Shader _uiShader = null!;
-    private TextRenderer _textRenderer = null!;
+    private UI.UI _ui = null!;
 
     private Colormap _grassColorMap = null!;
 
@@ -34,6 +31,7 @@ public class Game : GameWindow
 
     private Mesh _cubeMesh = null!;
     private World.World _world = null!;
+    private WorldRenderer _worldRenderer = null!;
 
     private FpsCounter _fpsCounter = null!;
 
@@ -54,21 +52,11 @@ public class Game : GameWindow
 
         GL.Enable(EnableCap.DepthTest);
         GL.Enable(EnableCap.Blend);
-        GL.BlendFunc(
-            BlendingFactor.SrcAlpha,
-            BlendingFactor.OneMinusSrcAlpha
-        );
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
         CursorState = CursorState.Grabbed;
 
-        _font = new Font("Resources/Roboto-Bold.ttf", 16);
-
-        _uiShader = new Shader(
-            "ui.vert",
-            "ui.frag"
-        );
-
-        _textRenderer = new TextRenderer();
+        _ui = new UI.UI(Size.X, Size.Y);
 
         _shader = new Shader(
             "shader.vert",
@@ -117,6 +105,8 @@ public class Game : GameWindow
             Size.X / (float)Size.Y
         );
 
+        _worldRenderer = new WorldRenderer(_player.Camera, _shader);
+
         _keyboard = new Keyboard(
             _player.Camera
         );
@@ -162,33 +152,11 @@ public class Game : GameWindow
         );
 
         _fpsCounter.Update(e.Time);
+        _worldRenderer.Draw(_world);
 
-        _shader.Use();
+        _ui.DrawText($"FPS: {_fpsCounter.FPS}", 5f, 5f, new Vector3(211f / 256, 211f / 256, 211f / 256));
+        _ui.DrawText("Hello pidoras", 5f, _ui.Font.FontSize + 10f, new Vector3(1f, 0f, 0f));
 
-        _shader.SetMatrix4("view", _player.Camera.GetViewMatrix());
-        _shader.SetMatrix4("projection", _player.Camera.GetProjectionMatrix());
-
-        _world.Draw(_shader);
-
-        _uiShader.Use();
-        _uiShader.SetMatrix4(
-            "projection",
-            Matrix4.CreateOrthographicOffCenter(
-                0,
-                Size.X,
-                Size.Y,
-                0,
-                -1,
-                1
-            )
-        );
-        _uiShader.SetInt("textTexture", 0);
-        _uiShader.SetVector3("textColor", new Vector3(211f/256, 211f/256, 211f/256));
-        GL.Enable(EnableCap.Blend);
-        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-        _font.Bind();
-        _textRenderer.Draw($"FPS: {_fpsCounter.FPS}", 5f, _font.FontSize + 5f, _font);
-        _textRenderer.Draw("Hello pidoras", 5f, _font.FontSize * 2 + 10f, _font);
         SwapBuffers();
     }
 
