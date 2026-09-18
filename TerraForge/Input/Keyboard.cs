@@ -6,26 +6,25 @@ namespace TerraForge.Input;
 public class Keyboard
 {
     public Vector2 Movement { get; private set; }
-    public float VerticalMovement { get; private set; }
-
+    public bool IsJumped { get; private set; }
+    
+    private bool _wasSpaceDown;
+    
     public Keyboard()
     {
         Movement = new Vector2(0, 0);
-        VerticalMovement = 0;
     }
 
     public void Update(KeyboardState input)
     {
         Vector2 movement = Vector2.Zero;
 
-        if (input.IsKeyDown(Keys.Space))
-            VerticalMovement = 1;
+        bool spaceDown = input.IsKeyDown(Keys.Space);
+        IsJumped = spaceDown && !_wasSpaceDown;
+        _wasSpaceDown = spaceDown;
 
-        if (input.IsKeyDown(Keys.LeftShift))
-            VerticalMovement = -1;
-
-        if (!input.IsKeyDown(Keys.Space) && !input.IsKeyDown(Keys.LeftShift))
-            VerticalMovement = 0;
+        if (!input.IsKeyDown(Keys.Space))
+            IsJumped = false;
 
         if (input.IsKeyDown(Keys.W))
             movement.Y += 1;

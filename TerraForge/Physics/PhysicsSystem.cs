@@ -1,37 +1,43 @@
 using OpenTK.Mathematics;
-using TerraForge.World;
 
 namespace TerraForge.Physics;
 
 public class PhysicsSystem
 {
-    private const float Gravity = 9.81f;
-
     public void Update(Player.Player player, World.World world, double deltaTime)
     {
-        player.Velocity -= new Vector3(0f, 1f, 0f)
-                           * Gravity
-                           * (float)deltaTime;
+        float dt = (float)deltaTime;
 
-        Vector3 movement = player.Movement + player.Velocity * (float)deltaTime;
+        // Gravity
+        player.Velocity -= new Vector3(0, PhysicsSettings.Gravity * dt, 0);
 
-        if (!Collision.Check(player, world, movement))
+        Vector3 xMovement = new Vector3(player.Movement.X, 0, 0);
+        Vector3 yMovement = new Vector3(0, player.Velocity.Y * dt, 0);
+        Vector3 zMovement = new Vector3(0, 0, player.Movement.Z);
+
+        if (!Collision.Check(player, world, xMovement))
         {
-            player.Position += movement;
+            player.Position += xMovement;
         }
-
-        foreach (Cube cube in world.Cubes)
+        
+        if (!Collision.Check(player, world, yMovement))
         {
-            if (Collision.IsStandingOn(player.AABB, cube.AABB))
-            {
-                player.IsGrounded = true;
+            player.Position += yMovement;
+        }
+        else if (player.Velocity.Y < 0)
+        {
+            player.IsGrounded = true;
 
-                player.Velocity = new Vector3(
-                    player.Velocity.X,
-                    0,
-                    player.Velocity.Z
-                );
-            }
+            player.Velocity = new Vector3(
+                player.Velocity.X,
+                0,
+                player.Velocity.Z
+            );
+        }
+        
+        if (!Collision.Check(player, world, zMovement))
+        {
+            player.Position += zMovement;
         }
 
         player.Update();

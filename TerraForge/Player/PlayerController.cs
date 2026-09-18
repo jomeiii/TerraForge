@@ -1,6 +1,5 @@
 using OpenTK.Mathematics;
 using TerraForge.Input;
-using TerraForge.Physics;
 
 namespace TerraForge.Player;
 
@@ -8,8 +7,6 @@ public class PlayerController
 {
     private Keyboard _keyboard;
     private Player _player;
-
-    private float _speed = 4;
 
     public PlayerController(Keyboard keyboard, Player player)
     {
@@ -25,12 +22,12 @@ public class PlayerController
             front * _keyboard.Movement.Y +
             right * _keyboard.Movement.X;
 
-        movement.Y = _keyboard.VerticalMovement;
-
+        if (_keyboard.IsJumped) _player.Jump();
+        
         if (movement.LengthSquared > 0)
             movement = movement.Normalized();
 
-        movement *= (float)(_speed * deltaTime);
+        movement *= (float)(_player.Speed * deltaTime);
         _player.Movement = movement;
         
         _player.Update();

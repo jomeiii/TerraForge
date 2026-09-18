@@ -12,11 +12,17 @@ public class Player
     public Vector3 Velocity { get; set; }
     public bool IsGrounded { get; set; }
     public Camera.Camera Camera { get; private set; }
+    
+    public float Speed { get; set; } = 5f;
+    public float JumpHeight { get; set; } = 1.05f;
 
     private readonly Vector3 _size = new(0.6f, 1.8f, 0.6f);
     private readonly float _offsetCameraY = -0.2f;
 
     public Vector3 Size => _size;
+    
+    private float JumpForce =>
+        MathF.Sqrt(2 * PhysicsSettings.Gravity * JumpHeight);
 
     public Player(Vector3 position, float aspectRatio)
     {
@@ -41,5 +47,19 @@ public class Player
         Camera.Yaw = Yaw;
 
         AABB = new AABB(Position, _size);
+    }
+    
+    public void Jump()
+    {
+        if (!IsGrounded)
+            return;
+
+        Velocity = new Vector3(
+            Velocity.X,
+            JumpForce,
+            Velocity.Z
+        );
+
+        IsGrounded = false;
     }
 }

@@ -12,7 +12,7 @@ public class World
 
     public World(WorldReference worldReference)
     {
-        _cubes = new Cube[10 * 10];
+        _cubes = new Cube[10 * 10 + 3];
         int count = 0;
         
         for (int x = -5; x < 5; x++)
@@ -32,6 +32,16 @@ public class World
                 _cubes[count] = grass;
                 count++;
             }
+        }
+
+        for (int x = 2; x < 5; x++)
+        {
+            Stone stone = new Stone(worldReference.CubeMesh,
+                worldReference.StoneTexture,
+                new Vector3(x, 0, 0));
+            
+            _cubes[count] = stone;
+            count++;
         }
     }
 }
