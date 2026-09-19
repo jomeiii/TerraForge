@@ -12,12 +12,12 @@ public class World
 
     public World(WorldReference worldReference)
     {
-        _cubes = new Cube[10 * 10 + 3];
+        _cubes = new Cube[20 * 20 + 5];
         int count = 0;
         
-        for (int x = -5; x < 5; x++)
+        for (int x = -10; x < 10; x++)
         {
-            for (int z = -5; z < 5; z++)
+            for (int z = -10; z < 10; z++)
             {
                 Grass grass = new Grass(
                     worldReference.CubeMesh,
@@ -43,5 +43,21 @@ public class World
             _cubes[count] = stone;
             count++;
         }
+        
+        Grass grassParkur = new Grass(
+            worldReference.CubeMesh,
+            worldReference.TopDirtTexture,
+            worldReference.SideTexture,
+            worldReference.BottomDirtTexture,
+            worldReference.SideOverlayTexture,
+            new Vector3(1, 1, 1),
+            worldReference.GrassColorMap
+        );
+        _cubes[count++] = grassParkur;
+
+        Stone stoneParkur = new Stone(worldReference.CubeMesh,
+            worldReference.StoneTexture,
+            new Vector3(-1, 2, 1));
+        _cubes[count] = stoneParkur;
     }
 }

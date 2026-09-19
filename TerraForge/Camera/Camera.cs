@@ -12,7 +12,7 @@ namespace TerraForge.Camera
 
         private float _yaw;
 
-        private float _fov = MathHelper.PiOver4;
+        private float _fov = MathHelper.DegreesToRadians(60);
 
         public Camera(Vector3 position, float aspectRatio)
         {
