@@ -20,7 +20,7 @@ public class UI : IDisposable
         );
 
         _font = new Font(
-            "Resources/Roboto-Bold.ttf",
+            "Resources/main/Roboto-Bold.ttf",
             18
         );
 

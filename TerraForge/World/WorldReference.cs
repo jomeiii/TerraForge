@@ -1,41 +1,21 @@
 using TerraForge.Graphics;
+using TerraForge.World.Textures;
 
 namespace TerraForge.World;
 
 public class WorldReference
 {
     public Mesh CubeMesh { get; }
-    public Texture StoneTexture { get; }
-    public Texture SideTexture { get; }
-    public Texture BottomDirtTexture { get; }
-    public Texture TopDirtTexture { get; }
-    public Texture SideOverlayTexture { get; }
-    public Colormap GrassColorMap { get; }
+    public TextureAtlas BlockAtlas { get; }
+
 
     public WorldReference()
     {
-        GrassColorMap = new Colormap(
-            "Resources/minecraft/textures/colormap/grass.png"
-        );
+        Console.WriteLine("WorldReference created");
 
-        SideTexture = new Texture(
-            "Resources/minecraft/textures/block/grass_block_side.png"
-        );
-
-        SideOverlayTexture = new Texture(
-            "Resources/minecraft/textures/block/grass_block_side_overlay.png"
-        );
-
-        BottomDirtTexture = new Texture(
-            "Resources/minecraft/textures/block/dirt.png"
-        );
-
-        TopDirtTexture = new Texture(
-            "Resources/minecraft/textures/block/grass_block_top.png"
-        );
-
-        StoneTexture = new Texture(
-            "Resources/minecraft/textures/block/cobblestone.png"
+        BlockAtlas = new TextureAtlas(
+            new Texture("Resources/main/blocks.png"),
+            AtlasLoader.Load("Resources/main/blocks.json")
         );
 
         CubeMesh = TerraForge.World.CubeMesh.Create();
@@ -44,11 +24,6 @@ public class WorldReference
     public void Dispose()
     {
         CubeMesh.Dispose();
-        StoneTexture.Dispose();
-        SideTexture.Dispose();
-        BottomDirtTexture.Dispose();
-        TopDirtTexture.Dispose();
-        SideOverlayTexture.Dispose();
-        BottomDirtTexture.Dispose();
+        BlockAtlas.Texture.Dispose();
     }
 }

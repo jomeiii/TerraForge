@@ -16,22 +16,4 @@ public static class BlockTextureManager
         _dirt = new Texture("Resources/Textures/dirt.png");
         _stone = new Texture("Resources/Textures/stone.png");
     }
-
-    public static Texture? GetTexture(BlockType type, BlockFace face)
-    {
-        return type switch
-        {
-            BlockType.Grass => face switch
-            {
-                BlockFace.Top => _grassTop,
-                BlockFace.Bottom => _dirt,
-                _ => _grassSide
-            },
-
-            BlockType.Dirt => _dirt,
-            BlockType.Stone => _stone,
-
-            _ => null
-        };
-    }
 }

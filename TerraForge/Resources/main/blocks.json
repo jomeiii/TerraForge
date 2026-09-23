@@ -1,0 +1,20 @@
+{
+  "atlas": "blocks.png",
+  "tileSize": 128,
+  "columns": 8,
+  "rows": 8,
+  "blocks": {
+    "Grass": {
+      "Top": [0, 3],
+      "Side": [1, 0],
+      "Overlay": [0, 1],
+      "Colormap": [0, 5]
+    },
+    "Dirt": {
+      "All": [0, 2]
+    },
+    "Cobblestone": {
+      "All": [0, 4]
+    }
+  }
+}
