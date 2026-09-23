@@ -4,8 +4,8 @@ namespace TerraForge;
 
 public class Program
 {
-        static void Main(string[] args)
-        {
+    static void Main(string[] args)
+    {
         using (Game game = new Game(1280, 900, "TerraForge"))
         {
             game.Run();

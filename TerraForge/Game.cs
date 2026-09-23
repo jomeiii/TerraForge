@@ -54,7 +54,7 @@ public class Game : GameWindow
         _ui = new UI.UI(Size.X, Size.Y);
 
         _player = new Player.Player(
-            new Vector3(0, 0 + 0.1f, 0),
+            new Vector3(0, 50f, 0),
             Size.X / (float)Size.Y
         );
 
@@ -62,7 +62,7 @@ public class Game : GameWindow
         _playerController = new PlayerController(_keyboard, _player);
 
         _worldReference = new WorldReference();
-        _world = new World.World(_worldReference);
+        _world = new World.World();
         _worldRenderer = new WorldRenderer(_player.Camera);
 
         _mouse = new Mouse(_player);
@@ -88,6 +88,8 @@ public class Game : GameWindow
         _playerController.Update(e.Time);
         _physics.Update(_player, _world, e.Time);
 
+        GL.Enable(EnableCap.DepthTest);
+        
         if (KeyboardState.IsKeyDown(Keys.Escape))
             Close();
     }
