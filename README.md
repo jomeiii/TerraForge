@@ -3,7 +3,7 @@
 > A Minecraft-inspired game engine built from scratch with C# and OpenGL.
 
 <p align="center">
-  <img src="Assets/demo.gif" alt="TerraForge Demo" width="800">
+  <img src="Assets/demo.gif" alt="TerraForge Demo" width="500">
 </p>
 
 <p align="center">
