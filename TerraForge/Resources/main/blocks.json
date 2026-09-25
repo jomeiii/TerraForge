@@ -5,16 +5,31 @@
   "rows": 8,
   "blocks": {
     "Grass": {
-      "Top": [0, 3],
-      "Side": [1, 0],
-      "Overlay": [0, 1],
-      "Colormap": [0, 5]
+        "Top": {
+            "Base": [3, 0],
+            "Color": [0.6875, 0.7226, 0.3437]
+        },
+        "Bottom": {
+            "Base": [2, 0],
+            "Color": [1, 1, 1]
+        },
+        "Side": {
+            "Base": [0, 0],
+            "Overlay": [1, 0],
+            "Color": [0.6875, 0.7226, 0.3437]
+        }
     },
     "Dirt": {
-      "All": [0, 2]
+      "All": {
+        "Base": [2, 0],
+        "Color": [1, 1, 1]
+      }
     },
     "Cobblestone": {
-      "All": [0, 4]
+      "All": {
+        "Base": [4, 0],
+        "Color": [1, 1, 1]
+      }
     }
   }
 }

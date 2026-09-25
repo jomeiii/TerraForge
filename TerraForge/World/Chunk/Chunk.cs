@@ -1,9 +1,11 @@
 using OpenTK.Graphics.OpenGL4;
+using TerraForge.World.Textures.Atlas;
 
 namespace TerraForge.World.Chunk;
 
 public class Chunk
 {
+    public const int Stride = 16 * sizeof(float);
     public const int Size = 16;
 
     public Block[,,] Blocks { get; }
@@ -13,7 +15,7 @@ public class Chunk
     public int Vbo { get; }
     public int Ebo { get; }
 
-    public Chunk()
+    public Chunk(AtlasConfig atlas)
     {
         Blocks = new Block[Size, Size, Size];
 
@@ -23,12 +25,27 @@ public class Chunk
             {
                 for (int z = 0; z < Size; z++)
                 {
-                    Blocks[x, y, z] = new Block(BlockType.Grass);
+                    if (x > 4 && x < Size - 4 &&
+                        y > 6  && 
+                        z > 4 && z < Size - 4)
+                    {
+                        Blocks[x, y, z] = new Block(BlockType.Air);
+                    }
+                    else if (x > 4 && x < Size - 4 &&
+                             y == 6 &&
+                             z > 4 && z < Size - 4)
+                    {
+                        Blocks[x, y, z] = new Block(BlockType.Cobblestone);
+                    }
+                    else
+                    {
+                        Blocks[x, y, z] = new Block(BlockType.Grass);
+                    }
                 }
             }
         }
 
-        Mesh = ChunkMeshCreator.CreateChunkMesh(this);
+        Mesh = ChunkMeshCreator.CreateChunkMesh(this, atlas);
 
         Vao = GL.GenVertexArray();
         Vbo = GL.GenBuffer();
@@ -52,26 +69,24 @@ public class Chunk
             BufferUsageHint.StaticDraw
         );
 
-        GL.VertexAttribPointer(
-            0,
-            3,
-            VertexAttribPointerType.Float,
-            false,
-            5 * sizeof(float),
-            0
-        );
+        // pos
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Stride, 0);
         GL.EnableVertexAttribArray(0);
 
-        GL.VertexAttribPointer(
-            1,
-            2,
-            VertexAttribPointerType.Float,
-            false,
-            5 * sizeof(float),
-            3 * sizeof(float)
-        );
+        // local uv
+        GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Stride, 3 * sizeof(float));
         GL.EnableVertexAttribArray(1);
 
-        GL.BindVertexArray(0);
+        // base uv
+        GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, Stride, 5 * sizeof(float));
+        GL.EnableVertexAttribArray(2);
+
+        // overlay uv
+        GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Float, false, Stride, 9 * sizeof(float));
+        GL.EnableVertexAttribArray(3);
+
+        // color vector3
+        GL.VertexAttribPointer(4, 3, VertexAttribPointerType.Float, false, Stride, 13 * sizeof(float));
+        GL.EnableVertexAttribArray(4);
     }
 }

@@ -1,6 +1,6 @@
 using TerraForge.Graphics;
 
-namespace TerraForge.World.Textures;
+namespace TerraForge.World.Textures.Atlas;
 
 public class TextureAtlas
 {

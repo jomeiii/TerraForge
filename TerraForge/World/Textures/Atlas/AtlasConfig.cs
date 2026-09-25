@@ -1,6 +1,6 @@
 using OpenTK.Mathematics;
 
-namespace TerraForge.World.Textures;
+namespace TerraForge.World.Textures.Atlas;
 
 public class AtlasConfig
 {
@@ -14,10 +14,10 @@ public class AtlasConfig
     public Vector4 GetUV(int tileX, int tileY)
     {
         float uMin = (float)tileX / Columns;
-        float vMin = (float)tileY / Rows;
+        float uMax = (float)(tileX + 1) / Columns;
 
-        float uMax = uMin + 1.0f / Columns;
-        float vMax = vMin + 1.0f / Rows;
+        float vMin = 1.0f - (float)(tileY + 1) / Rows;
+        float vMax = 1.0f - (float)(tileY) / Rows;
 
         return new Vector4(uMin, vMin, uMax, vMax);
     }

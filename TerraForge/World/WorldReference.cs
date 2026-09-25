@@ -1,5 +1,5 @@
 using TerraForge.Graphics;
-using TerraForge.World.Textures;
+using TerraForge.World.Textures.Atlas;
 
 namespace TerraForge.World;
 
@@ -11,8 +11,6 @@ public class WorldReference
 
     public WorldReference()
     {
-        Console.WriteLine("WorldReference created");
-
         BlockAtlas = new TextureAtlas(
             new Texture("Resources/main/blocks.png"),
             AtlasLoader.Load("Resources/main/blocks.json")

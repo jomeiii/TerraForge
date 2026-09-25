@@ -3,24 +3,28 @@
 out vec4 outputColor;
 
 in vec2 texCoord;
+in vec4 baseUV;
+in vec4 overlayUV;
+in vec3 color;
 
 uniform sampler2D texture0;
-uniform vec3 blockColor;
-uniform bool useBlockColor;
 
 void main()
 {
-    vec4 textureColor = texture(texture0, texCoord);
+    vec2 atlasUV = mix(baseUV.xy, baseUV.zw, texCoord);
+    vec4 textureColor = texture(texture0, atlasUV);
 
-    if (useBlockColor)
+    if (overlayUV != vec4(0.0))
     {
-        outputColor = vec4(
-        textureColor.rgb * blockColor,
-        textureColor.a
-        );
+        vec2 overlayAtlasUV = mix(overlayUV.xy, overlayUV.zw, texCoord);
+        vec4 overlayColor = texture(texture0, overlayAtlasUV);
+
+        textureColor = mix(textureColor, vec4(overlayColor.rgb * color, overlayColor.a), overlayColor.a);
     }
     else
     {
-        outputColor = textureColor;
+        textureColor = vec4(textureColor.rgb * color, textureColor.a);
     }
+
+    outputColor = vec4(textureColor.rgb, textureColor.a);
 }

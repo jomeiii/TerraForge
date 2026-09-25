@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace TerraForge.World.Textures;
+namespace TerraForge.World.Textures.Atlas;
 
 public static class AtlasLoader
 {

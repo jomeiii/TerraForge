@@ -1,4 +1,4 @@
-namespace TerraForge.World;
+namespace TerraForge.World.Textures.TextureFace;
 
 public enum BlockFace
 {

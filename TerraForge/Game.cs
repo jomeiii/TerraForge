@@ -62,8 +62,8 @@ public class Game : GameWindow
         _playerController = new PlayerController(_keyboard, _player);
 
         _worldReference = new WorldReference();
-        _world = new World.World();
-        _worldRenderer = new WorldRenderer(_player.Camera);
+        _world = new World.World(_worldReference.BlockAtlas.Config);
+        _worldRenderer = new WorldRenderer(_player.Camera, _worldReference.BlockAtlas);
 
         _mouse = new Mouse(_player);
         _fpsCounter = new FpsCounter();

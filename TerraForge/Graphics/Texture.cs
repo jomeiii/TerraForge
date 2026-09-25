@@ -50,6 +50,10 @@ public class Texture : IDisposable
             TextureParameterName.TextureMagFilter,
             (int)TextureMagFilter.Nearest
         );
+        
+        Console.WriteLine($"Texture: {fullPath}");
+        Console.WriteLine($"Size: {image.Width}x{image.Height}");
+        Console.WriteLine($"Handle: {Handle}");
     }
 
     public void Use(
