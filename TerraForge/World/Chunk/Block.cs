@@ -1,4 +1,4 @@
-namespace TerraForge.World;
+namespace TerraForge.World.Chunk;
 
 public struct Block
 {

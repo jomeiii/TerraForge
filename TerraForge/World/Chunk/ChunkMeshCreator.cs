@@ -78,33 +78,28 @@ public static class ChunkMeshCreator
 
     private static FaceTextureConfig GetMaterial(AtlasConfig atlas, BlockType blockType, BlockFace face)
     {
-        BlockTextureConfig blockConfig = atlas.Blocks[blockType];
+        BlockTextureConfig block = atlas.Blocks[blockType];
 
-        FaceTextureConfig? result = face switch
+        FaceTextureConfig? material = face switch
         {
-            BlockFace.Top => blockConfig.Top ?? blockConfig.All,
-            BlockFace.Bottom => blockConfig.Bottom ?? blockConfig.All,
-            BlockFace.Left => blockConfig.Side ?? blockConfig.All,
-            BlockFace.Right => blockConfig.Side ?? blockConfig.All,
-            BlockFace.Front => blockConfig.Side ?? blockConfig.All,
-            BlockFace.Back => blockConfig.Side ?? blockConfig.All,
-            _ => throw new ArgumentOutOfRangeException(nameof(face), face, null)
+            BlockFace.Top => block.Top,
+            BlockFace.Bottom => block.Bottom,
+            _ => block.Side
         };
 
-        return result ?? throw new InvalidOperationException(
-            $"No texture configuration for {blockType} face {face}."
-        );
+        return material ?? block.All
+            ?? throw new InvalidOperationException(
+                $"No texture configuration for {blockType} face {face}.");
     }
 
     private static void AddVertex(List<float> vertices, float x, float y, float z, float u, float v,
         FaceTextureConfig texture, AtlasConfig atlas)
     {
-        Vector4? baseUV = texture.GetBaseUV(atlas);
         vertices.AddRange([x, y, z, u, v]);
 
-        AddUV(vertices, baseUV);
+        AddUV(vertices, texture.GetBaseUV(atlas));
         AddUV(vertices, texture.GetOverlayUV(atlas));
-        AddColorUV(vertices, texture.GetColorUV());
+        AddColor(vertices, texture.GetColorUV());
     }
 
     private static void AddUV(List<float> vertices, Vector4? uv)
@@ -113,9 +108,9 @@ public static class ChunkMeshCreator
         vertices.AddRange([value.X, value.Y, value.Z, value.W]);
     }
 
-    private static void AddColorUV(List<float> vertices, Vector3? color)
+    private static void AddColor(List<float> vertices, Vector3 color)
     {
-        vertices.AddRange(color.Value.X, color.Value.Y, color.Value.Z);
+        vertices.AddRange([color.X, color.Y, color.Z]);
     }
 
     private static void AddQuadIndexes(List<uint> indexes, uint startIndex)

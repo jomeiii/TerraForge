@@ -1,5 +1,6 @@
 using OpenTK.Mathematics;
 using TerraForge.World;
+using TerraForge.World.Chunk;
 
 namespace TerraForge.Physics;
 
@@ -10,10 +11,7 @@ public static class Collision
         return a.Intersects(b);
     }
 
-    public static bool Check(
-        Player.Player player,
-        World.World world,
-        Vector3 movement)
+    public static bool Check(Player.Player player, World.World world, Vector3 movement)
     {
         AABB newAABB = new AABB(
             player.Position + movement,

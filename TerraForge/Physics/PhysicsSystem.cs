@@ -8,7 +8,6 @@ public class PhysicsSystem
     {
         float dt = (float)deltaTime;
 
-        // Gravity
         player.Velocity -= new Vector3(0, PhysicsSettings.Gravity * dt, 0);
 
         Vector3 xMovement = new Vector3(player.Movement.X, 0, 0);
