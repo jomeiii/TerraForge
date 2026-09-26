@@ -29,7 +29,7 @@ public class Chunk
                         y > 6  && 
                         z > 4 && z < Size - 4)
                     {
-                        Blocks[x, y, z] = new Block(BlockType.Air);
+                        Blocks[x, y , z] = new Block(BlockType.Air);
                     }
                     else if (x > 4 && x < Size - 4 &&
                              y == 6 &&
