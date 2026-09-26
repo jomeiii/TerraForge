@@ -1,4 +1,5 @@
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using TerraForge.World.Textures.Atlas;
 
 namespace TerraForge.World.Chunk;
@@ -10,36 +11,35 @@ public class Chunk
 
     public Block[,,] Blocks { get; }
     public ChunkMesh Mesh { get; private set; }
+    public bool IsDirty;
+    public int Vao { get; private set; }
+    public int Vbo { get; private set; }
+    public int Ebo { get; private set; }
 
-    public int Vao { get; }
-    public int Vbo { get; }
-    public int Ebo { get; }
-
-    public Chunk(AtlasConfig atlas)
+    public Chunk()
     {
         Blocks = new Block[Size, Size, Size];
+    }
 
+    public void Generate(World world, AtlasConfig atlas)
+    {
         for (int x = 0; x < Size; x++)
         {
             for (int y = 0; y < Size; y++)
             {
                 for (int z = 0; z < Size; z++)
                 {
-                    if (x > 4 && x < Size - 4 &&
-                        y > 6  && 
-                        z > 4 && z < Size - 4)
+                    if (x > 4 && x < Size - 4 && y > 6 && z > 4 && z < Size - 4)
                     {
-                        Blocks[x, y , z] = new Block(BlockType.Air);
+                        world.SpawnBlock(new Vector3i(x, y, z), BlockType.Air);
                     }
-                    else if (x > 4 && x < Size - 4 &&
-                             y == 6 &&
-                             z > 4 && z < Size - 4)
+                    else if (x > 4 && x < Size - 4 && y == 6 && z > 4 && z < Size - 4)
                     {
-                        Blocks[x, y, z] = new Block(BlockType.Cobblestone);
+                        world.SpawnBlock(new Vector3i(x, y, z), BlockType.Cobblestone);
                     }
                     else
                     {
-                        Blocks[x, y, z] = new Block(BlockType.Grass);
+                        world.SpawnBlock(new Vector3i(x, y, z), BlockType.Grass);
                     }
                 }
             }
@@ -88,5 +88,11 @@ public class Chunk
         // color vector3
         GL.VertexAttribPointer(4, 3, VertexAttribPointerType.Float, false, Stride, 13 * sizeof(float));
         GL.EnableVertexAttribArray(4);
+        
+        
+        for (int y = 0; y < Size; y++)
+        {
+            Console.WriteLine($"y={y}: {Blocks[8, y, 8].Type}");
+        }
     }
 }

@@ -87,6 +87,8 @@ public class Game : GameWindow
 
         _playerController.Update(e.Time);
         _physics.Update(_player, _world, e.Time);
+        
+        _world.Update();
 
         GL.Enable(EnableCap.DepthTest);
         

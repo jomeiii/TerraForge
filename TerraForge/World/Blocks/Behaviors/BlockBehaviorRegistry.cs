@@ -11,9 +11,7 @@ public class BlockBehaviorRegistry
 
     public BlockBehavior Get(BlockType type)
     {
-        return _behaviors.TryGetValue(type, out BlockBehavior? behavior)
-            ? behavior
-            : EmptyBlockBehavior.Instance;
+        return _behaviors.TryGetValue(type, out BlockBehavior? behavior) ? behavior : EmptyBlockBehavior.Instance;
     }
 
     private void Register(BlockType type, BlockBehavior behavior)

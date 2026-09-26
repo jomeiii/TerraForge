@@ -1,8 +1,8 @@
 namespace TerraForge.World.Chunk;
 
-public struct Block
+public class Block
 {
-    public BlockType Type;
+    public BlockType Type { get; set; }
 
     public Block(BlockType type)
     {

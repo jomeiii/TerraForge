@@ -8,6 +8,10 @@ public abstract class BlockBehavior
     {
     }
 
+    public virtual void OnSpawn(World world, Vector3i position)
+    {
+    }
+    
     public virtual void OnBroken(World world, Vector3i position)
     {
     }
