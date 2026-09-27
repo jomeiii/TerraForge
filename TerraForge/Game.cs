@@ -5,6 +5,7 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using TerraForge.Graphics;
 using TerraForge.Input;
+using TerraForge.Inventory.Items;
 using TerraForge.Physics;
 using TerraForge.Player;
 using TerraForge.UI;
@@ -15,7 +16,7 @@ namespace TerraForge;
 public class Game : GameWindow
 {
     private PhysicsSystem _physics;
-    
+
     private UI.UI _ui = null!;
 
     private Player.Player _player = null!;
@@ -58,6 +59,9 @@ public class Game : GameWindow
             Size.X / (float)Size.Y
         );
 
+        _player.Inventory.Add(new BlockItem("grass", "Grass", BlockType.Grass, 10), 100);
+        Console.WriteLine(_player.Inventory.GetSlot(0).Stack.Count);
+        
         _keyboard = new Keyboard();
         _playerController = new PlayerController(_keyboard, _player);
 
@@ -87,11 +91,11 @@ public class Game : GameWindow
 
         _playerController.Update(e.Time);
         _physics.Update(_player, _world, e.Time);
-        
+
         _world.Update();
 
         GL.Enable(EnableCap.DepthTest);
-        
+
         if (KeyboardState.IsKeyDown(Keys.Escape))
             Close();
     }
@@ -112,8 +116,10 @@ public class Game : GameWindow
         uint lineUpperCount = 0;
         _ui.DrawText("TerraForge", 5f, 10f, lineUpperCount++, consoleColor);
         _ui.DrawText($"FPS: {_fpsCounter.FPS}", 5f, 10f, lineUpperCount++, consoleColor);
-        _ui.DrawText($"XYZ: {_player.Position.X:F2} {_player.Position.Y:F2} {_player.Position.Z:F2}", 5f, 10f, lineUpperCount++, consoleColor);
-        _ui.DrawText($"Yaw: {_player.Yaw:F2} Pitch: {_player.Camera.Pitch:F2}", 5f, 10f, lineUpperCount++, consoleColor);
+        _ui.DrawText($"XYZ: {_player.Position.X:F2} {_player.Position.Y:F2} {_player.Position.Z:F2}", 5f, 10f,
+            lineUpperCount++, consoleColor);
+        _ui.DrawText($"Yaw: {_player.Yaw:F2} Pitch: {_player.Camera.Pitch:F2}", 5f, 10f, lineUpperCount++,
+            consoleColor);
         _ui.DrawText($"Velocity: {_player.Velocity}", 5f, 10f, lineUpperCount++, consoleColor);
         _ui.DrawText($"IsGrounded: {_player.IsGrounded}", 5f, 10f, lineUpperCount, consoleColor);
 

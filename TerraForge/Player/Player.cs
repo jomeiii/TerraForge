@@ -12,6 +12,7 @@ public class Player
     public Vector3 Velocity { get; set; }
     public bool IsGrounded { get; set; }
     public Camera.Camera Camera { get; private set; }
+    public Inventory.Inventory Inventory { get; private set; }
     
     public float Speed { get; set; } = 5f;
     public float JumpHeight { get; set; } = 1.05f;
@@ -33,6 +34,7 @@ public class Player
         AABB = new AABB(Position, _size);
 
         Camera = new Camera.Camera(position, aspectRatio);
+        Inventory = new Inventory.Inventory();
         UpdatePosition();
     }
 

@@ -56,13 +56,7 @@ public class World
 
         Block block = Chunks[0].Blocks[x, y, z];
 
-        Console.WriteLine(
-            $"BEFORE: ({x},{y},{z}) = {block.Type}");
-
         block.Type = type;
-
-        Console.WriteLine(
-            $"AFTER: ({x},{y},{z}) = {Chunks[0].Blocks[x, y, z].Type}");
 
         MarkDirty(Chunks[0]);
 

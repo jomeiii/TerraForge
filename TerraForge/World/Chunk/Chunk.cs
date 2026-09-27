@@ -88,11 +88,5 @@ public class Chunk
         // color vector3
         GL.VertexAttribPointer(4, 3, VertexAttribPointerType.Float, false, Stride, 13 * sizeof(float));
         GL.EnableVertexAttribArray(4);
-        
-        
-        for (int y = 0; y < Size; y++)
-        {
-            Console.WriteLine($"y={y}: {Blocks[8, y, 8].Type}");
-        }
     }
 }
