@@ -5,6 +5,7 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using TerraForge.Graphics;
 using TerraForge.Input;
+using TerraForge.Inventory;
 using TerraForge.Inventory.Items;
 using TerraForge.Physics;
 using TerraForge.Player;
@@ -58,10 +59,10 @@ public class Game : GameWindow
             new Vector3(0, 50f, 0),
             Size.X / (float)Size.Y
         );
-
+        
         _player.Inventory.Add(new BlockItem("grass", "Grass", BlockType.Grass, 10), 100);
         Console.WriteLine(_player.Inventory.GetSlot(0).Stack.Count);
-        
+
         _keyboard = new Keyboard();
         _playerController = new PlayerController(_keyboard, _player);
 
@@ -114,7 +115,7 @@ public class Game : GameWindow
 
         Color consoleColor = new Color(211, 211, 211, 0.7f);
         uint lineUpperCount = 0;
-        _ui.DrawText("TerraForge", 5f, 10f, lineUpperCount++, consoleColor);
+        _ui.DrawText("TerraForge by jom3i", 5f, 10f, lineUpperCount++, consoleColor);
         _ui.DrawText($"FPS: {_fpsCounter.FPS}", 5f, 10f, lineUpperCount++, consoleColor);
         _ui.DrawText($"XYZ: {_player.Position.X:F2} {_player.Position.Y:F2} {_player.Position.Z:F2}", 5f, 10f,
             lineUpperCount++, consoleColor);
@@ -122,6 +123,8 @@ public class Game : GameWindow
             consoleColor);
         _ui.DrawText($"Velocity: {_player.Velocity}", 5f, 10f, lineUpperCount++, consoleColor);
         _ui.DrawText($"IsGrounded: {_player.IsGrounded}", 5f, 10f, lineUpperCount, consoleColor);
+
+        _ui.RenderCanvases();
 
         SwapBuffers();
     }
@@ -136,6 +139,7 @@ public class Game : GameWindow
     protected override void OnUnload()
     {
         _worldReference.Dispose();
+        _ui.Dispose();
         base.OnUnload();
     }
 }
