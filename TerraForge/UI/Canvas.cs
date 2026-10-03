@@ -8,12 +8,14 @@ public abstract class Canvas : IDisposable
 {
     protected readonly int _vertexArray;
     protected readonly int _vertexBuffer;
+    protected readonly int _elementBuffer;
 
-    protected readonly Vector2i _canvasSize;
     protected readonly Vector2i _pivot;
     protected readonly Vector2i _offset;
     
     protected readonly Shader _shader;
+    
+    protected Vector2i _canvasSize;
 
     protected Canvas(Shader shader, Vector2i pivot, Vector2i offset)
     {

@@ -1,6 +1,7 @@
 #version 330 core
 
 in vec2 TexCoord;
+in vec3 UiColor;
 
 out vec4 outputColor;
 

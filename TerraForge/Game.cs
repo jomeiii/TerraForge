@@ -53,15 +53,22 @@ public class Game : GameWindow
         CursorState = CursorState.Grabbed;
 
         _physics = new();
-        _ui = new UI.UI(Size.X, Size.Y);
 
         _player = new Player.Player(
             new Vector3(0, 50f, 0),
             Size.X / (float)Size.Y
         );
-        
+
+        _ui = new UI.UI(Size.X, Size.Y);
+        _ui.AddCanvas(new InventoryUI(_player.Inventory,
+            _ui.Shader,
+            new Vector2i(Size.X / 2, Size.Y),
+            new Vector2i(60, 60),
+            new Vector2i(0, -20),
+            new Vector2i(20, 10))
+        );
+
         _player.Inventory.Add(new BlockItem("grass", "Grass", BlockType.Grass, 10), 100);
-        Console.WriteLine(_player.Inventory.GetSlot(0).Stack.Count);
 
         _keyboard = new Keyboard();
         _playerController = new PlayerController(_keyboard, _player);

@@ -39,8 +39,6 @@ public class UI : IDisposable
         );
 
         _canvases = new List<Canvas>();
-        _canvases.Add( new InventoryUI(_shader, new Vector2i(width / 2, height), new Vector2i(800, 100),
-            new Vector2i(0, -20)));
         
         SetProjection(width, height);
     }
@@ -58,6 +56,11 @@ public class UI : IDisposable
                 1
             )
         );
+    }
+
+    public void AddCanvas(Canvas canvas)
+    {
+        _canvases.Add(canvas);
     }
 
     public void RenderCanvases()

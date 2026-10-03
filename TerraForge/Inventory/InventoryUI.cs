@@ -10,20 +10,27 @@ public class InventoryUI : Canvas
     private readonly Vector2i _itemSize;
     private readonly Vector2i _spacing;
 
-    private float[] _vertices = null!;
+    private List<float> _vertices = null!;
 
-    public InventoryUI(Shader shader, Vector2i pivot, Vector2i itemSize, Vector2i offset, Vector2i spacing) : base(shader, pivot, offset)
+    public InventoryUI(Inventory inventory, Shader shader, Vector2i pivot, Vector2i itemSize, Vector2i offset,
+        Vector2i spacing) : base(shader, pivot, offset)
     {
         _itemSize = itemSize;
-        CreateVertexArrays();
+        _spacing = spacing;
+
+        _canvasSize = new Vector2i(_itemSize.X * inventory.SlotsCount + (inventory.SlotsCount + 1) * _spacing.X,
+            _itemSize.Y + 2 * _spacing.Y);
+
+        CreateVertexArrays(inventory);
     }
 
-    private void CreateVertexArrays()
+    private void CreateVertexArrays(Inventory inventory)
     {
         GL.BindVertexArray(_vertexArray);
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBuffer);
 
         Vector2i canvasCenter = new Vector2i(_pivot.X + _offset.X, _pivot.Y + _offset.Y - _canvasSize.Y / 2);
+        _vertices = new List<float>();
         _vertices =
         [
             canvasCenter.X - _canvasSize.X / 2f, canvasCenter.Y - _canvasSize.Y / 2f,
@@ -32,13 +39,31 @@ public class InventoryUI : Canvas
 
             canvasCenter.X + _canvasSize.X / 2f, canvasCenter.Y + _canvasSize.Y / 2f,
             canvasCenter.X + _canvasSize.X / 2f, canvasCenter.Y - _canvasSize.Y / 2f,
-            canvasCenter.X - _canvasSize.X / 2f, canvasCenter.Y - _canvasSize.Y / 2f,
+            canvasCenter.X - _canvasSize.X / 2f, canvasCenter.Y - _canvasSize.Y / 2f
         ];
+
+
+        Vector2i itemCenter = new Vector2i(_pivot.X + _offset.X, _pivot.Y + _offset.Y - _canvasSize.Y / 2);
+        itemCenter.X += -_spacing.X / 2 - _itemSize.X - _spacing.X - _itemSize.X / 2;
+        for (int i = 0; i < inventory.SlotsCount; i++)
+        {
+            _vertices.AddRange([
+                itemCenter.X - _itemSize.X / 2f, itemCenter.Y - _itemSize.Y / 2f,
+                itemCenter.X - _itemSize.X / 2f, itemCenter.Y + _itemSize.Y / 2f,
+                itemCenter.X + _itemSize.X / 2f, itemCenter.Y + _itemSize.Y / 2f,
+
+                itemCenter.X + _itemSize.X / 2f, itemCenter.Y + _itemSize.Y / 2f,
+                itemCenter.X + _itemSize.X / 2f, itemCenter.Y - _itemSize.Y / 2f,
+                itemCenter.X - _itemSize.X / 2f, itemCenter.Y - _itemSize.Y / 2f
+            ]);
+
+            itemCenter.X += _itemSize.X + _spacing.X;
+        }
 
         GL.BufferData(
             BufferTarget.ArrayBuffer,
-            _vertices.Length * sizeof(float),
-            _vertices,
+            _vertices.Count * sizeof(float),
+            _vertices.ToArray(),
             BufferUsageHint.StaticDraw
         );
 
@@ -60,7 +85,7 @@ public class InventoryUI : Canvas
         _shader.SetBool("useSolidColor", true);
         _shader.SetVector4("textColor", new Vector4(1f, 1f, 1f, 1f));
         GL.BindVertexArray(_vertexArray);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, _vertices.Count / 2);
     }
 
     public override void Dispose()
