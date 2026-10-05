@@ -1,7 +1,9 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using TerraForge.Graphics;
+using TerraForge.Inventory.Items;
 using TerraForge.UI;
+using TerraForge.World.Textures.Atlas;
 
 namespace TerraForge.Inventory;
 
@@ -10,13 +12,19 @@ public class InventoryUI : Canvas
     private readonly Vector2i _itemSize;
     private readonly Vector2i _spacing;
 
+    private readonly TextureAtlas _textureAtlas;
+    private readonly Inventory _inventory;
+
     private List<float> _vertices = null!;
 
     public InventoryUI(Inventory inventory, Shader shader, Vector2i pivot, Vector2i itemSize, Vector2i offset,
-        Vector2i spacing) : base(shader, pivot, offset)
+        Vector2i spacing, TextureAtlas textureAtlas) : base(shader, pivot, offset)
     {
+        _inventory = inventory;
         _itemSize = itemSize;
         _spacing = spacing;
+
+        _textureAtlas = textureAtlas;
 
         _canvasSize = new Vector2i(_itemSize.X * inventory.SlotsCount + (inventory.SlotsCount + 1) * _spacing.X,
             _itemSize.Y + 2 * _spacing.Y);
@@ -33,13 +41,13 @@ public class InventoryUI : Canvas
         _vertices = new List<float>();
         _vertices =
         [
-            canvasCenter.X - _canvasSize.X / 2f, canvasCenter.Y - _canvasSize.Y / 2f,
-            canvasCenter.X - _canvasSize.X / 2f, canvasCenter.Y + _canvasSize.Y / 2f,
-            canvasCenter.X + _canvasSize.X / 2f, canvasCenter.Y + _canvasSize.Y / 2f,
+            canvasCenter.X - _canvasSize.X / 2f, canvasCenter.Y - _canvasSize.Y / 2f, 0f, 0f,
+            canvasCenter.X - _canvasSize.X / 2f, canvasCenter.Y + _canvasSize.Y / 2f, 0f, 1f,
+            canvasCenter.X + _canvasSize.X / 2f, canvasCenter.Y + _canvasSize.Y / 2f, 1f, 1f,
 
-            canvasCenter.X + _canvasSize.X / 2f, canvasCenter.Y + _canvasSize.Y / 2f,
-            canvasCenter.X + _canvasSize.X / 2f, canvasCenter.Y - _canvasSize.Y / 2f,
-            canvasCenter.X - _canvasSize.X / 2f, canvasCenter.Y - _canvasSize.Y / 2f
+            canvasCenter.X + _canvasSize.X / 2f, canvasCenter.Y + _canvasSize.Y / 2f, 1f, 1f,
+            canvasCenter.X + _canvasSize.X / 2f, canvasCenter.Y - _canvasSize.Y / 2f, 1f, 0f,
+            canvasCenter.X - _canvasSize.X / 2f, canvasCenter.Y - _canvasSize.Y / 2f, 0f, 0f
         ];
 
 
@@ -47,15 +55,42 @@ public class InventoryUI : Canvas
         itemCenter.X += -_spacing.X / 2 - _itemSize.X - _spacing.X - _itemSize.X / 2;
         for (int i = 0; i < inventory.SlotsCount; i++)
         {
-            _vertices.AddRange([
-                itemCenter.X - _itemSize.X / 2f, itemCenter.Y - _itemSize.Y / 2f,
-                itemCenter.X - _itemSize.X / 2f, itemCenter.Y + _itemSize.Y / 2f,
-                itemCenter.X + _itemSize.X / 2f, itemCenter.Y + _itemSize.Y / 2f,
+            var stack = inventory.GetSlot(i).Stack;
+            if (stack is { Count: > 0, Item: BlockItem blockItem })
+            {
+                var faceTextureConfig = _textureAtlas.Config.Blocks[blockItem.BlockType].Side;
+                float uMin = 0f, uMax = 0f, vMin = 0f, vMax = 0f;
+                if (faceTextureConfig != null && stack?.Count > 0)
+                {
+                    var baseUv = faceTextureConfig.GetBaseUV(_textureAtlas.Config).Value;
+                    uMin = baseUv.X;
+                    vMin = baseUv.Y;
+                    uMax = baseUv.Z;
+                    vMax = baseUv.W;
+                }
 
-                itemCenter.X + _itemSize.X / 2f, itemCenter.Y + _itemSize.Y / 2f,
-                itemCenter.X + _itemSize.X / 2f, itemCenter.Y - _itemSize.Y / 2f,
-                itemCenter.X - _itemSize.X / 2f, itemCenter.Y - _itemSize.Y / 2f
-            ]);
+                _vertices.AddRange([
+                    itemCenter.X - _itemSize.X / 2f, itemCenter.Y - _itemSize.Y / 2f, uMin, vMax,
+                    itemCenter.X - _itemSize.X / 2f, itemCenter.Y + _itemSize.Y / 2f, uMin, vMin,
+                    itemCenter.X + _itemSize.X / 2f, itemCenter.Y + _itemSize.Y / 2f, uMax, vMin,
+
+                    itemCenter.X + _itemSize.X / 2f, itemCenter.Y + _itemSize.Y / 2f, uMax, vMin,
+                    itemCenter.X + _itemSize.X / 2f, itemCenter.Y - _itemSize.Y / 2f, uMax, vMax,
+                    itemCenter.X - _itemSize.X / 2f, itemCenter.Y - _itemSize.Y / 2f, uMin, vMax
+                ]);
+            }
+            else
+            {
+                _vertices.AddRange([
+                    itemCenter.X - _itemSize.X / 2f, itemCenter.Y - _itemSize.Y / 2f, 0f, 1f,
+                    itemCenter.X - _itemSize.X / 2f, itemCenter.Y + _itemSize.Y / 2f, 0f, 0f,
+                    itemCenter.X + _itemSize.X / 2f, itemCenter.Y + _itemSize.Y / 2f, 1f, 0f,
+
+                    itemCenter.X + _itemSize.X / 2f, itemCenter.Y + _itemSize.Y / 2f, 1f, 0f,
+                    itemCenter.X + _itemSize.X / 2f, itemCenter.Y - _itemSize.Y / 2f, 1f, 1f,
+                    itemCenter.X - _itemSize.X / 2f, itemCenter.Y - _itemSize.Y / 2f, 0f, 1f
+                ]);
+            }
 
             itemCenter.X += _itemSize.X + _spacing.X;
         }
@@ -72,20 +107,48 @@ public class InventoryUI : Canvas
             2,
             VertexAttribPointerType.Float,
             false,
-            2 * sizeof(float),
+            4 * sizeof(float),
             0
         );
-
         GL.EnableVertexAttribArray(0);
+
+        GL.VertexAttribPointer(
+            1,
+            2,
+            VertexAttribPointerType.Float,
+            false,
+            4 * sizeof(float),
+            2 * sizeof(float)
+        );
+        GL.EnableVertexAttribArray(1);
     }
 
     public override void Render()
     {
         _shader.Use();
-        _shader.SetBool("useSolidColor", true);
-        _shader.SetVector4("textColor", new Vector4(1f, 1f, 1f, 1f));
         GL.BindVertexArray(_vertexArray);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, _vertices.Count / 2);
+
+        // background
+        _shader.SetBool("useSolidColor", true);
+        _shader.SetBool("useTexture", false);
+        _shader.SetVector4("textColor", new Vector4(1f, 1f, 1f, 1f));
+        GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
+
+        // items
+        _shader.SetBool("useTexture", true);
+        _shader.SetBool("useSolidColor", false);
+        _textureAtlas.Texture.Use();
+        GL.DrawArrays(PrimitiveType.Triangles, 6, _inventory.ActiveSlotCount * 6);
+
+        // empty slots
+        _shader.SetBool("useSolidColor", true);
+        _shader.SetBool("useTexture", false);
+        _shader.SetColor("textColor", Color.Gray);
+        GL.DrawArrays(
+            PrimitiveType.Triangles,
+            6 + _inventory.ActiveSlotCount * 6,
+            _vertices.Count / 4 - 6 - _inventory.ActiveSlotCount * 6
+        );
     }
 
     public override void Dispose()

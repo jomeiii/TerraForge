@@ -9,6 +9,8 @@ public class Inventory
     private readonly InventorySlot[] _slots;
 
     public int SelectedSlot { get; private set; }
+    public int ActiveSlotCount { get; set; } = 0;
+
     public int SlotsCount => _slots.Length;
 
     public Inventory()
@@ -38,7 +40,10 @@ public class Inventory
                 remaining -= added;
 
                 if (remaining == 0)
+                {
+                    ActiveSlotCount++;
                     return true;
+                }
             }
         }
 
@@ -51,7 +56,10 @@ public class Inventory
                 remaining -= added;
 
                 if (remaining == 0)
+                {
+                    ActiveSlotCount++;
                     return true;
+                }
             }
         }
 

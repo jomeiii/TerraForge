@@ -59,16 +59,7 @@ public class Game : GameWindow
             Size.X / (float)Size.Y
         );
 
-        _ui = new UI.UI(Size.X, Size.Y);
-        _ui.AddCanvas(new InventoryUI(_player.Inventory,
-            _ui.Shader,
-            new Vector2i(Size.X / 2, Size.Y),
-            new Vector2i(60, 60),
-            new Vector2i(0, -20),
-            new Vector2i(20, 10))
-        );
-
-        _player.Inventory.Add(new BlockItem("grass", "Grass", BlockType.Grass, 10), 100);
+        _player.Inventory.Add(new BlockItem("grass", "Grass", BlockType.Grass, 500), 100);
 
         _keyboard = new Keyboard();
         _playerController = new PlayerController(_keyboard, _player);
@@ -79,6 +70,16 @@ public class Game : GameWindow
 
         _mouse = new Mouse(_player);
         _fpsCounter = new FpsCounter();
+        
+        _ui = new UI.UI(Size.X, Size.Y);
+        _ui.AddCanvas(new InventoryUI(_player.Inventory,
+            _ui.Shader,
+            new Vector2i(Size.X / 2, Size.Y),
+            new Vector2i(60, 60),
+            new Vector2i(0, -20),
+            new Vector2i(10, 10),
+            _worldReference.BlockAtlas)
+        );
     }
 
     protected override void OnUpdateFrame(FrameEventArgs e)
@@ -120,6 +121,8 @@ public class Game : GameWindow
         _fpsCounter.Update(e.Time);
         _worldRenderer.Draw(_world);
 
+        GL.Disable(EnableCap.DepthTest);
+
         Color consoleColor = new Color(211, 211, 211, 0.7f);
         uint lineUpperCount = 0;
         _ui.DrawText("TerraForge by jom3i", 5f, 10f, lineUpperCount++, consoleColor);
@@ -132,6 +135,8 @@ public class Game : GameWindow
         _ui.DrawText($"IsGrounded: {_player.IsGrounded}", 5f, 10f, lineUpperCount, consoleColor);
 
         _ui.RenderCanvases();
+
+        GL.Enable(EnableCap.DepthTest);
 
         SwapBuffers();
     }

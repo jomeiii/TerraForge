@@ -13,6 +13,7 @@ public struct Color
     public static Color White => new Color(1f, 1f, 1f);
     public static Color Black => new Color(0f, 0f, 0f);
     public static Color Yellow => new Color(1f, 1f, 0f);
+    public static Color Gray => new Color(128, 128, 128);
     
     public Color(float r, float g, float b, float a = 1f)
     {

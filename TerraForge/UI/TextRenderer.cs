@@ -1,5 +1,4 @@
 using OpenTK.Graphics.OpenGL4;
-using TerraForge.Graphics;
 
 namespace TerraForge.UI;
 
@@ -7,6 +6,7 @@ public class TextRenderer : IDisposable
 {
     private readonly int _vertexArray;
     private readonly int _vertexBuffer;
+    
 
     public TextRenderer()
     {
@@ -41,7 +41,7 @@ public class TextRenderer : IDisposable
     {
         List<float> _vertices = new();
         float cursorX = x;
-
+        
         foreach (char c in text)
         {
             if (!font.TryGetGlyph(c, out Glyph glyph))

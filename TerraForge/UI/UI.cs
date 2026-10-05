@@ -75,6 +75,7 @@ public class UI : IDisposable
     {
         _shader.Use();
         _shader.SetBool("useSolidColor", false);
+        _shader.SetBool("useTexture", false);
         _shader.SetColor("textColor", color);
         _font.Bind();
         _textRenderer.Draw(text, x, _font.FontSize + y + _font.LineHeight * lineUpperCount, _font);
