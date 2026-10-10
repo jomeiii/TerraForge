@@ -138,7 +138,8 @@ public class InventoryUI : Canvas
         // background
         _shader.SetBool("useSolidColor", true);
         _shader.SetBool("useTexture", false);
-        _shader.SetVector4("textColor", new Vector4(1f, 1f, 1f, 1f));
+        _shader.SetColor("textColor", Color.White);
+        _shader.SetFloat("solidColorAlpha", 1f);
         GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
 
         // items
@@ -151,6 +152,7 @@ public class InventoryUI : Canvas
         _shader.SetBool("useSolidColor", true);
         _shader.SetBool("useTexture", false);
         _shader.SetColor("textColor", Color.Gray);
+        _shader.SetFloat("solidColorAlpha", 0.33f);
         GL.DrawArrays(
             PrimitiveType.Triangles,
             6 + _inventory.ActiveSlotCount * 6,
@@ -159,7 +161,8 @@ public class InventoryUI : Canvas
 
         // count of items
         var font = _ui.Font;
-        Vector2i textPosition = new Vector2i(_pivot.X + _offset.X - _itemSize.X / 2, _pivot.Y + _offset.Y - _spacing.Y - (int)font.LineHeight);
+        Vector2i textPosition = new Vector2i(_pivot.X + _offset.X - _itemSize.X / 2,
+            _pivot.Y + _offset.Y - _spacing.Y - (int)font.LineHeight);
         textPosition.X += -_spacing.X / 2 - _itemSize.X - _spacing.X - _itemSize.X / 2;
         for (int i = 0; i < _inventory.ActiveSlotCount; i++)
         {
