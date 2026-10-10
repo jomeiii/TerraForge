@@ -58,8 +58,7 @@ public class Game : GameWindow
             new Vector3(0, 50f, 0),
             Size.X / (float)Size.Y
         );
-
-        _player.Inventory.Add(new BlockItem("grass", "Grass", BlockType.Grass, 500), 100);
+        
 
         _keyboard = new Keyboard();
         _playerController = new PlayerController(_keyboard, _player);
@@ -68,6 +67,12 @@ public class Game : GameWindow
         _world = new World.World(_worldReference.BlockAtlas.Config);
         _worldRenderer = new WorldRenderer(_player.Camera, _worldReference.BlockAtlas);
 
+        _player.Inventory.Add(_worldReference.ItemRegistry.Grass, 15);
+        _player.Inventory.Add(_worldReference.ItemRegistry.Cobblestone, 20);
+        
+        Console.WriteLine("Slot 0: " +_player.Inventory.GetSlot(0).Stack.Count);
+        Console.WriteLine("Slot 1: " +_player.Inventory.GetSlot(1).Stack.Count);
+        
         _mouse = new Mouse(_player);
         _fpsCounter = new FpsCounter();
         
@@ -78,7 +83,8 @@ public class Game : GameWindow
             new Vector2i(60, 60),
             new Vector2i(0, -20),
             new Vector2i(10, 10),
-            _worldReference.BlockAtlas)
+            _worldReference.BlockAtlas,
+            _ui)
         );
     }
 

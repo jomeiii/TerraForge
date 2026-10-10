@@ -4,6 +4,7 @@ using TerraForge.Graphics;
 using TerraForge.Inventory.Items;
 using TerraForge.UI;
 using TerraForge.World.Textures.Atlas;
+using TerraForge.World.Textures.TextureFace;
 
 namespace TerraForge.Inventory;
 
@@ -15,16 +16,20 @@ public class InventoryUI : Canvas
     private readonly TextureAtlas _textureAtlas;
     private readonly Inventory _inventory;
 
+    private readonly UI.UI _ui;
+
     private List<float> _vertices = null!;
 
     public InventoryUI(Inventory inventory, Shader shader, Vector2i pivot, Vector2i itemSize, Vector2i offset,
-        Vector2i spacing, TextureAtlas textureAtlas) : base(shader, pivot, offset)
+        Vector2i spacing, TextureAtlas textureAtlas, UI.UI ui) : base(shader, pivot, offset)
     {
         _inventory = inventory;
         _itemSize = itemSize;
         _spacing = spacing;
 
         _textureAtlas = textureAtlas;
+
+        _ui = ui;
 
         _canvasSize = new Vector2i(_itemSize.X * inventory.SlotsCount + (inventory.SlotsCount + 1) * _spacing.X,
             _itemSize.Y + 2 * _spacing.Y);
@@ -58,11 +63,13 @@ public class InventoryUI : Canvas
             var stack = inventory.GetSlot(i).Stack;
             if (stack is { Count: > 0, Item: BlockItem blockItem })
             {
-                var faceTextureConfig = _textureAtlas.Config.Blocks[blockItem.BlockType].Side;
+                var faceTextureConfig = _textureAtlas.Config.Blocks[blockItem.BlockType].GetFace(BlockFace.Front);
                 float uMin = 0f, uMax = 0f, vMin = 0f, vMax = 0f;
-                if (faceTextureConfig != null && stack?.Count > 0)
+                if (faceTextureConfig != null && stack.Count > 0)
                 {
                     var baseUv = faceTextureConfig.GetBaseUV(_textureAtlas.Config).Value;
+
+                    Console.WriteLine(baseUv);
                     uMin = baseUv.X;
                     vMin = baseUv.Y;
                     uMax = baseUv.Z;
@@ -149,6 +156,16 @@ public class InventoryUI : Canvas
             6 + _inventory.ActiveSlotCount * 6,
             _vertices.Count / 4 - 6 - _inventory.ActiveSlotCount * 6
         );
+
+        // count of items
+        var font = _ui.Font;
+        Vector2i textPosition = new Vector2i(_pivot.X + _offset.X - _itemSize.X / 2, _pivot.Y + _offset.Y - _spacing.Y - (int)font.LineHeight);
+        textPosition.X += -_spacing.X / 2 - _itemSize.X - _spacing.X - _itemSize.X / 2;
+        for (int i = 0; i < _inventory.ActiveSlotCount; i++)
+        {
+            _ui.DrawText(_inventory.GetSlot(i).Stack.Count.ToString(), textPosition.X, textPosition.Y, 0, Color.Red);
+            textPosition.X += _itemSize.X + _spacing.X;
+        }
     }
 
     public override void Dispose()

@@ -7,7 +7,6 @@ public class TextRenderer : IDisposable
     private readonly int _vertexArray;
     private readonly int _vertexBuffer;
     
-
     public TextRenderer()
     {
         _vertexArray = GL.GenVertexArray();

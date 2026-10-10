@@ -7,7 +7,8 @@ public class WorldReference
 {
     public Mesh CubeMesh { get; }
     public TextureAtlas BlockAtlas { get; }
-
+    public ItemRegistry ItemRegistry { get; }
+    
 
     public WorldReference()
     {
@@ -17,6 +18,7 @@ public class WorldReference
         );
 
         CubeMesh = TerraForge.World.CubeMesh.Create();
+        ItemRegistry = new ItemRegistry();
     }
 
     public void Dispose()
