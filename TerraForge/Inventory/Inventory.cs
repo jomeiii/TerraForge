@@ -41,7 +41,6 @@ public class Inventory
 
                 if (remaining == 0)
                 {
-                    ActiveSlotCount++;
                     return true;
                 }
             }

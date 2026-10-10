@@ -2,6 +2,7 @@ using System.Drawing;
 using OpenTK.Mathematics;
 using TerraForge.Graphics;
 using TerraForge.Inventory;
+using TerraForge.UI.Canvases;
 using Color = TerraForge.Graphics.Color;
 
 namespace TerraForge.UI;
@@ -16,7 +17,7 @@ public class UI : IDisposable
 
     public Font Font => _font;
     public Shader Shader => _shader;
-    
+
     public UI(int width, int height)
     {
         _shader = new Shader(
@@ -39,7 +40,9 @@ public class UI : IDisposable
         );
 
         _canvases = new List<Canvas>();
-        
+        _canvases.Add(new Crossshair(_shader, new Vector2i(width / 2, height / 2), Vector2i.Zero,
+            new Vector2i(15, 3)));
+
         SetProjection(width, height);
     }
 
@@ -86,8 +89,8 @@ public class UI : IDisposable
         _font.Dispose();
         _textRenderer.Dispose();
         _shader.Dispose();
-        
-        for (int i = 0; i <  _canvases.Count; i++)
+
+        for (int i = 0; i < _canvases.Count; i++)
         {
             _canvases[i].Dispose();
         }

@@ -69,7 +69,6 @@ public class InventoryUI : Canvas
                 {
                     var baseUv = faceTextureConfig.GetBaseUV(_textureAtlas.Config).Value;
 
-                    Console.WriteLine(baseUv);
                     uMin = baseUv.X;
                     vMin = baseUv.Y;
                     uMax = baseUv.Z;
@@ -169,11 +168,5 @@ public class InventoryUI : Canvas
             _ui.DrawText(_inventory.GetSlot(i).Stack.Count.ToString(), textPosition.X, textPosition.Y, 0, Color.Red);
             textPosition.X += _itemSize.X + _spacing.X;
         }
-    }
-
-    public override void Dispose()
-    {
-        GL.DeleteVertexArray(_vertexArray);
-        GL.DeleteBuffer(_vertexBuffer);
     }
 }

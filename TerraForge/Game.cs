@@ -70,9 +70,6 @@ public class Game : GameWindow
         _player.Inventory.Add(_worldReference.ItemRegistry.Grass, 15);
         _player.Inventory.Add(_worldReference.ItemRegistry.Cobblestone, 20);
         
-        Console.WriteLine("Slot 0: " +_player.Inventory.GetSlot(0).Stack.Count);
-        Console.WriteLine("Slot 1: " +_player.Inventory.GetSlot(1).Stack.Count);
-        
         _mouse = new Mouse(_player);
         _fpsCounter = new FpsCounter();
         

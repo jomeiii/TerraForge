@@ -8,7 +8,6 @@ public abstract class Canvas : IDisposable
 {
     protected readonly int _vertexArray;
     protected readonly int _vertexBuffer;
-    protected readonly int _elementBuffer;
 
     protected readonly Vector2i _pivot;
     protected readonly Vector2i _offset;
@@ -32,6 +31,9 @@ public abstract class Canvas : IDisposable
     }
     
     public abstract void Render();
-    
-    public abstract void Dispose();
+
+    public virtual void Dispose()
+    {
+        
+    }
 }
